@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/> 
+    <meta charset="UTF-8">
+    
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px 20px 1000px 20px;
+        }
+        
+        .tokenInput {
+            width: 500px;
+            border: 10px solid lightgray;
+            padding: 10px;
+            font-size: 10pt;
+            margin: 0 0 10px 0;
+            cursor: text;
+            border-radius: 20px;
+        }
+        
+        .tokenInput input {
+            padding: 8px 4px;
+            border: 0;
+            font-size: 10pt;
+            width: 200px;
+        }
+        .tokenInput input:focus {
+            outline: none;
+        }
+        
+        .tokenInput .selected,
+        .tokenInput .floating .completion.selected,
+        .tokenInput .token.selected {
+            background: Highlight;
+            color: HighlightText;
+        }
+        
+        .tokenInput .token {
+            margin: 0 4px 2px 0;
+            border: 1px solid lightgray;
+            border-radius: 10px;
+            padding: 2px 4px 4px 4px;
+            cursor: pointer;
+        }
+        .tokenInput .token .x {
+            margin: 0 0 0 4px;
+            color: gray;
+            vertical-align: super;
+            font-size: 9pt;
+        }
+        
+        .tokenInput .floating {
+            border: 1px solid lightgray;
+            background: #fff;
+            min-width: 200px;
+            box-shadow: 4px 4px 10px gray;
+        }
+        .tokenInput .floating .x {
+            position: absolute;
+            right: 5px;
+            top: 1px;
+            color: black;
+            font-size: 9pt;
+        }
+        .tokenInput .floating .list {
+            margin-top: 14px;
+        }
+        .tokenInput .completion {
+            padding: 6px 10px 6px 10px;
+            cursor: pointer;
+        }
+        .tokenInput .completion:hover {
+            background: lightgray;
+        }
+        .tokenInput .floating .heading {
+            background: #eee;
+            padding: 2px 4px;
+        }
+        
+        .tokenInput .red {
+            background: #fee;
+        }
+        .tokenInput .green {
+            background: #efe;
+        }
+        .tokenInput .blue {
+            background: #eef;
+        }
+        
+        .tokenInput .hints {
+            padding: 10px;
+            line-height: 2em;
+        }
+        
+    </style>
+    
+    <script src="tokeninput.js"></script>
+    <script src="demo.js"></script>
+    
+</head>
+<body>
+
+    <div class="tokenInput" id="demo1">
+        <input placeholder="Type something…" />
+    </div>
+    
+    <div class="tokenInput" id="demo2">
+        <input placeholder="All defaults…" />
+    </div>
+    
+    <div class="tokenInput" id="demo3">
+        <input placeholder="No free-text…" />
+    </div>
+    
+    <div class="tokenInput" id="demo4">
+        <input placeholder="Type some more…" />
+    </div>
+    
+    <div class="tokenInput" id="demo5">
+        <input placeholder="Type some more…" />
+    </div>
+    
+    <div class="tokenInput" id="demo6">
+        <input placeholder="Free text completion option…" />
+    </div>
+    
+    <div class="tokenInput" id="demo7">
+        <input placeholder="Grouped completions…" />
+    </div>
+    
+    <div class="tokenInput" id="demo8">
+        <input placeholder="Grouped completions w/ new…" />
+    </div>
+    
+    <div class="tokenInput" id="demo10">
+        <input placeholder="Hints on focus…" />
+        <div id="demo10hints" class="hints" style="display: none">
+            <div>You can type many things into this input</div>
+            <div>Such as fruits, vehicles and colours!</div>
+        </div>
+    </div>
+    
+    <div class="tokenInput" id="demo11">
+        <input placeholder="Hints on focus & add…" />
+        <div id="demo11hints" class="hints" style="display: none">
+            <div>You can type many things into this input</div>
+            <div>Such as fruits, vehicles and colours!</div>
+            <div>This should stay open while adding</div>
+        </div>
+    </div>
+    
+    <div class="tokenInput" id="demo12">
+        <input placeholder="Delayed completions…" />
+    </div>    
+    
+    <div class="tokenInput" id="demo13">
+        <input placeholder="Best match…" />
+    </div>    
+    
+</body>
+</html>
