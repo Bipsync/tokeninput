@@ -22,7 +22,7 @@
                 return ( text.length && completions.length > 1 );
             },
             
-            completionsForText : function( /* text, delayedCompletionsFn */ ) { return []; },
+            completionsForText : function( /* text, delayedCompletionsId, delayedCompletionsFn */ ) { return []; },
             completionClassNames : function( /* datum */ ) { return []; },
             completionGroupClassNames : function( completionGroup ) { return [
                 completionGroup.id
