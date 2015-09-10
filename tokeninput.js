@@ -650,17 +650,20 @@
         this.floatingElement.style.left = inputLeft + 'px';
         this.floatingElement.style.top = inputTop + this.inputElement.offsetHeight + 'px';
         
+        this.completionsAboveInput = false;
+            
         var rect = this.floatingElement.getBoundingClientRect();
         if ( rect.bottom > document.documentElement.clientHeight ) {
             
-            this.floatingElement.style.left = inputLeft + 'px';
+            var previousTop = this.floatingElement.style.top;
             this.floatingElement.style.top = inputTop - ( rect.height ) + 'px';
-            this.completionsAboveInput = true;
-            
-        }
-        else {
-            
-            this.completionsAboveInput = false;
+            var newRect = this.floatingElement.getBoundingClientRect();
+            if ( newRect.top < 0 ) {
+                this.floatingElement.style.top = previousTop;
+            }
+            else {
+                this.completionsAboveInput = true;
+            }
             
         }
         
