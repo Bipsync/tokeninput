@@ -4,7 +4,7 @@
         
         this.options = options = this._merge( {
             
-            debug : true,
+            debug : false,
             
             undo : true,
             undoLimit : 10,
