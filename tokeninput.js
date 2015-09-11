@@ -153,7 +153,10 @@
                 }
             }
             
-            if ( !handled ) {
+            if ( handled ) {
+                e.stopPropagation();
+            }
+            else {
                 if ( this.selectedTokenIndex !== undefined ) {
                     this.deselectToken();
                     delete this.selectedTokenIndex;
