@@ -169,7 +169,7 @@ window.addEventListener( 'load', function() {
         
         inputElement.addEventListener( 'change', function() {
             window.setTimeout( function() {
-                console.log( id + ' = ' + JSON.stringify( tokenInput.getData() ) );
+                console.log( id + ' = ' + JSON.stringify( tokenInput.getTokens() ) );
             }, 0 );
         } );
         
