@@ -877,24 +877,7 @@
 
     };
 
-    T.prototype.getValue = function() {
-        
-        return this.getValues().join( ',' );
-        
-    };
-
-    T.prototype.getValues = function() {
-        
-        var values = [];
-        this.tokens.forEach( function( token ) {
-            values.push( token.value );
-        } );
-        return values;
-        
-    };
-
-
-    T.prototype.getData = function() {
+    T.prototype.getTokens = function() {
         
         return this.tokens.slice();
         
@@ -1006,6 +989,12 @@
         
     };
     
+    T.prototype.setCompletionGroups = function( completionGroups ) {
+        
+        this.options.completionGroups = completionGroups;
+        
+    };
+    
     //
     
     function TokenInput() {
@@ -1017,9 +1006,8 @@
             exposed = new TokenInput();
             
         [
-            'getValue',
-            'getValues',
-            'getData'
+            'getTokens',
+            'setCompletionGroups'
         ].forEach( function( method ) {
             
             exposed[ method ] = instance[ method ].bind( instance );
