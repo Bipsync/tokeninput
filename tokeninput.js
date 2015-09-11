@@ -430,6 +430,7 @@
         
         var element = document.createElement( 'div' );
         element.className = 'floating';
+        element.style.overflow = 'scroll';
         
         var removeElement = this._createRemoveElement();
         removeElement.addEventListener( 'click', this.onRemoveFloatingElementClick.bind( this ) );
@@ -659,7 +660,10 @@
             this.floatingElement.style.top = inputTop - ( rect.height ) + 'px';
             var newRect = this.floatingElement.getBoundingClientRect();
             if ( newRect.top < 0 ) {
+                
                 this.floatingElement.style.top = previousTop;
+                this.floatingElement.style.height = ( document.documentElement.clientHeight - rect.top - 20 ) + 'px';
+                
             }
             else {
                 this.completionsAboveInput = true;
