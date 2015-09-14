@@ -1011,7 +1011,9 @@
             
         [
             'getTokens',
-            'setCompletionGroups'
+            'setCompletionGroups',
+            'removeFloatingElement'
+            
         ].forEach( function( method ) {
             
             exposed[ method ] = instance[ method ].bind( instance );
