@@ -742,6 +742,10 @@
         
         options = options || {};
         
+        if ( !options.silent ) {
+            this.dispatchEvent( 'willAdd', datum );
+        }
+        
         var element = document.createElement( 'div' );
         element.style.display = 'inline-block';
         element.className = 
@@ -867,6 +871,37 @@
             this.toUndo( function() {
                 this.addToken( removedToken, {
                     index : selectedTokenIndex,
+                    isUndoing : true
+                } );
+            }.bind( this ) );
+        }
+        
+    };
+    
+    T.prototype.removeToken = function( datum, options ) {
+        
+        options = options || {};
+        
+        var tokenIndex = this.tokens.indexOf( datum );
+        if ( tokenIndex == -1 ) {
+            return;
+        }
+        
+        var tokenElement = this.tokenElements.splice( tokenIndex, 1 )[ 0 ];
+            
+        tokenElement.parentNode.removeChild( tokenElement );
+        
+        var removedToken = this.tokens.splice( tokenIndex, 1 )[ 0 ];
+        
+        if ( !options.silent ) {
+            this.dispatchEvent( 'change' );
+            this.dispatchEvent( 'remove', removedToken );
+        }
+        
+        if ( !options.isUndoing && options.canUndo !== false ) {
+            this.toUndo( function() {
+                this.addToken( removedToken, {
+                    index : tokenIndex,
                     isUndoing : true
                 } );
             }.bind( this ) );
@@ -1012,7 +1047,8 @@
         [
             'getTokens',
             'setCompletionGroups',
-            'removeFloatingElement'
+            'removeFloatingElement',
+            'removeToken'
             
         ].forEach( function( method ) {
             
