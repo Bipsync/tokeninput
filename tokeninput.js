@@ -6,6 +6,7 @@
             
             debug : false,
             
+            readOnly : false,
             undo : true,
             undoLimit : 10,
             tabToAdd : true,
@@ -199,6 +200,12 @@
                 this.showHintElement();                
                 
             }.bind( this ) );
+            
+        }
+        
+        if ( this.options.readOnly ) {
+            
+            this.inputElement.setAttribute( 'readonly', 'readonly' );
             
         }
         
@@ -754,9 +761,11 @@
         element.innerText = datum.text;
         element.addEventListener( 'click', this.onTokenClick.bind( this ) );
         
-        var removeElement = this._createRemoveElement();
-        removeElement.addEventListener( 'click', this.onRemoveTokenClick.bind( this ) );
-        element.appendChild( removeElement );
+        if ( !this.options.readOnly ) {
+            var removeElement = this._createRemoveElement();
+            removeElement.addEventListener( 'click', this.onRemoveTokenClick.bind( this ) );
+            element.appendChild( removeElement );
+        }
         
         if ( options.index !== undefined ) {
             var before = this.tokenElements[ options.index ];
