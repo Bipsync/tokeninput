@@ -156,7 +156,16 @@ window.addEventListener( 'load', function() {
                 vehicles : { heading : 'Vehicles' },
                 colours : { heading : 'Colours', newOption : true }
             }
-        } 
+        }, { 
+            id : 'demo14',
+            completionsForText : completionsForTextWithSuggestions( defaultSuggestions ),
+            tokenFormatter : function( datum, element ) {
+                element.innerText += ' FORMATTED';
+            },
+            completionFormatter : function( datum, element ) {
+                element.innerText += ' FORMATTED';
+            }
+        }  
     ].forEach( function( options ) {
         
         var id = options.id,

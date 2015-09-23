@@ -12,6 +12,7 @@
             tabToAdd : true,
             xHTML : '&#x2716;',
             tokenClassNames : function( /* datum */ ) { return []; },
+            tokenFormatter : function( /* datum, element */ ) {},
             containerClickTriggersFocus : true,
             
             freeTextEnabled : false,
@@ -25,6 +26,7 @@
             
             completionsForText : function( /* text, delayedCompletionsId, delayedCompletionsFn */ ) { return []; },
             completionClassNames : function( /* datum */ ) { return []; },
+            completionFormatter : function( /* datum, element */ ) {},
             completionGroupClassNames : function( completionGroup ) { return [
                 completionGroup.id
             ]; },
@@ -601,6 +603,9 @@
             element.className = 
                 [ 'completion' ].concat( this.options.completionClassNames( datum ) ).join( ' ' );
             element.innerText = datum.text;
+            if ( this.options.completionFormatter ) {
+                this.options.completionFormatter( datum, element );
+            }
             element.addEventListener( 'click', this.onCompletionClick.bind( this ) );
             containerElement.appendChild( element );
             
@@ -759,6 +764,9 @@
             [ 'token' ].concat( this.options.tokenClassNames( datum ) ).join( ' ' );
         
         element.innerText = datum.text;
+        if ( this.options.tokenFormatter ) {
+            this.options.tokenFormatter( datum, element );
+        }
         element.addEventListener( 'click', this.onTokenClick.bind( this ) );
         
         if ( !this.options.readOnly ) {
