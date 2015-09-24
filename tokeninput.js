@@ -584,7 +584,7 @@
                         var heading = document.createElement( 'div' );
                         heading.className = 
                             [ 'heading' ].concat( this.options.completionGroupHeadingClassNames( group ) ).join( ' ' );
-                        heading.innerText = group.heading;
+                        heading.textContent = group.heading;
                         groupContainer.appendChild( heading );
                     }
                     
@@ -602,7 +602,7 @@
             element.style.display = 'block';
             element.className = 
                 [ 'completion' ].concat( this.options.completionClassNames( datum ) ).join( ' ' );
-            element.innerText = datum.text;
+            element.textContent = datum.text;
             if ( this.options.completionFormatter ) {
                 this.options.completionFormatter( datum, element );
             }
@@ -763,7 +763,7 @@
         element.className = 
             [ 'token' ].concat( this.options.tokenClassNames( datum ) ).join( ' ' );
         
-        element.innerText = datum.text;
+        element.textContent = datum.text;
         if ( this.options.tokenFormatter ) {
             this.options.tokenFormatter( datum, element );
         }
