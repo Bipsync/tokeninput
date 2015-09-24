@@ -10,7 +10,7 @@
             undo : true,
             undoLimit : 10,
             tabToAdd : true,
-            xHTML : '&#x2716;',
+            xHTML : '&times;',
             tokenClassNames : function( /* datum */ ) { return []; },
             tokenFormatter : function( /* datum, element */ ) {},
             containerClickTriggersFocus : true,
