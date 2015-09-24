@@ -831,7 +831,11 @@
             this.inputElement.value = '';
             this.inputElement.focus();
             
-            this.dispatchEvent( 'tokenClicked', e.target );
+            var token = this.tokens[ this.selectedTokenIndex ];
+            this.dispatchEvent( 'tokenClicked', {
+                datum : token,
+                element : e.target
+            } );
             
         }
         
