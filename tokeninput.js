@@ -50,6 +50,7 @@
         
         this.completions = [];
         this.completionElements = [];
+        this.groupElements = {};
         this.tokens = [];
         this.tokenElements = [];
         this.undoStack = [];    
@@ -563,40 +564,9 @@
         
         this.setupFloatingElement();
         
-        var previousGroup;
-        
         completions.forEach( function( datum ) {
             
-            var containerElement = this.completionsListElement,
-                datumGroup = datum.displayGroup || datum.group;
-            
-            if ( datumGroup ) {
-                var group = this.options.completionGroups[ datumGroup ];
-                if ( group && group != previousGroup ) {
-                    
-                    group.id = datumGroup;
-                    
-                    var groupContainer = document.createElement( 'div' );
-                    groupContainer.className = 
-                        [ 'group' ].concat( this.options.completionGroupClassNames( group ) ).join( ' ' );
-                        
-                    if ( group.heading ) {
-                        var heading = document.createElement( 'div' );
-                        heading.className = 
-                            [ 'heading' ].concat( this.options.completionGroupHeadingClassNames( group ) ).join( ' ' );
-                        heading.textContent = group.heading;
-                        groupContainer.appendChild( heading );
-                    }
-                    
-                    this.completionsListElement.appendChild( groupContainer );
-                    containerElement = groupContainer;
-                    
-                    previousGroup = group;
-                    
-                    delete group.id;
-                    
-                }
-            }
+            var containerElement = this.containerElementForCompletion( datum );
             
             var element = document.createElement( 'a' );
             element.style.display = 'block';
@@ -615,6 +585,45 @@
         
         this.positionFloatingElement();
         
+    };
+    
+    T.prototype.containerElementForCompletion = function( datum ) {
+        
+        var containerElement = this.completionsListElement,
+            datumGroup = datum.displayGroup || datum.group;
+        if ( !datumGroup ) {
+            return containerElement;
+        }
+            
+        var completionGroup = this.options.completionGroups[ datumGroup ];
+        if ( !completionGroup ) {
+            return containerElement;
+        }
+                
+        containerElement = this.groupElements[ datumGroup ];
+        if ( !containerElement ) {
+                
+            completionGroup.id = datumGroup;
+            
+            containerElement = this.groupElements[ datumGroup ] = document.createElement( 'div' );
+            containerElement.className = 
+                [ 'group' ].concat( this.options.completionGroupClassNames( completionGroup ) ).join( ' ' );
+                
+            if ( completionGroup.heading ) {
+                var heading = document.createElement( 'div' );
+                heading.className = 
+                    [ 'heading' ].concat( this.options.completionGroupHeadingClassNames( completionGroup ) ).join( ' ' );
+                heading.textContent = completionGroup.heading;
+                containerElement.appendChild( heading );
+            }
+            
+            this.completionsListElement.appendChild( containerElement );
+            
+            delete completionGroup.id;
+            
+        }
+        return containerElement;
+            
     };
 
     T.prototype.onCompletionClick = function( e ) {
@@ -707,6 +716,7 @@
         
         this.completions = [];
         this.completionElements = [];
+        this.groupElements = {};
         delete this.selectedCompletionIndex;
         
         this.removeFloatingElement();
