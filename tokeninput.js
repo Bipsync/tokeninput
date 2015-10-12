@@ -218,21 +218,6 @@
         
         this.suggestCompletions();
         
-        if ( this.options.autoSelectSingleCompletions && this.receivedCompletions.length == 1 ) {
-            this.selectedCompletionIndex = 0;
-            this.selectCompletion();
-        }
-        else {
-            for ( var index in this.completions ) {
-                var completion = this.completions[ index ];
-                if ( completion.select ) {
-                    this.selectedCompletionIndex = index;
-                    this.selectCompletion();
-                    break;
-                }
-            }
-        }
-        
     };
 
     T.prototype.onUp = function( e ) {
@@ -524,6 +509,23 @@
             }
             else {
                 this.selectCompletion();
+            }
+        }
+
+        if ( this.selectedCompletionIndex === undefined ) {
+            if ( this.options.autoSelectSingleCompletions && this.receivedCompletions.length == 1 ) {
+                this.selectedCompletionIndex = 0;
+                this.selectCompletion();
+            }
+            else {
+                for ( var index in this.completions ) {
+                    var completion = this.completions[ index ];
+                    if ( completion.select ) {
+                        this.selectedCompletionIndex = index;
+                        this.selectCompletion();
+                        break;
+                    }
+                }
             }
         }
         
