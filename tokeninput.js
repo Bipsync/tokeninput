@@ -69,7 +69,7 @@
         
         this.setupInputElement( inputElement );
         this.setupRepositionListeners();
-        this.addInitialTokens();
+        this.setTokens( this.options.data );
         this.setupTrace();    
         
     }
@@ -1037,10 +1037,20 @@
             
     };
 
-    T.prototype.addInitialTokens = function() {
+    T.prototype.setTokens = function( newTokens ) {
         
-        if ( this.options.data ) {
-            this.options.data.forEach( function( datum ) {
+        var existingTokens = this.tokens.slice(),
+            existingToken;
+            
+        while ( ( existingToken = existingTokens.pop() ) ) {
+            this.removeToken( existingToken, {
+                silent : true,
+                canUndo : false
+            } );
+        }
+        
+        if ( newTokens ) {
+            newTokens.forEach( function( datum ) {
                 this.addToken( datum, {
                     silent : true,
                     canUndo : false
@@ -1081,7 +1091,8 @@
             'getTokens',
             'setCompletionGroups',
             'removeFloatingElement',
-            'removeToken'
+            'removeToken',
+            'setTokens'
             
         ].forEach( function( method ) {
             
