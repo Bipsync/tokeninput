@@ -66,6 +66,7 @@
             Tab : 9
         };
         this.willShowHintElement = true;
+        this.eventListeners = [];
         
         this.setupInputElement( inputElement );
         this.setupRepositionListeners();
@@ -138,13 +139,13 @@
         
         this.inputElement = element;
         
-        element.addEventListener( 'input', function() {
+        this.addEventListener( element, 'input', function() {
             
             this.onInput();
             
         }.bind( this ) );
         
-        element.addEventListener( 'keydown', function( e ) {
+        this.addEventListener( element, 'keydown', function( e ) {
             
             var handled = false;
             for ( var index in this.keys ) {
@@ -171,7 +172,7 @@
         
         if ( this.options.documentClickHidesCompletions ) {
         
-            document.documentElement.addEventListener( 'click', function() {
+            this.addEventListener( document.documentElement, 'click', function() {
                 
                 if ( this.completions.length ) {
                     this.removeCompletions();
@@ -183,7 +184,7 @@
         
         if ( this.options.containerClickTriggersFocus ) {
         
-            element.parentNode.addEventListener( 'click', function() {
+            this.addEventListener( element.parentNode, 'click', function() {
                 
                 this.inputElement.focus();
                 
@@ -193,7 +194,7 @@
         
         if ( this.options.hintElement ) {
             
-            this.inputElement.addEventListener( 'focus', function() {
+            this.addEventListener( this.inputElement, 'focus', function() {
                 
                 if ( !this.willShowHintElement ) {
                     this.willShowHintElement = true;
@@ -431,7 +432,7 @@
         element.style.overflow = 'hidden';
         
         var removeElement = this._createRemoveElement();
-        removeElement.addEventListener( 'click', this.onRemoveFloatingElementClick.bind( this ) );
+        this.addEventListener( removeElement, 'click', this.onRemoveFloatingElementClick.bind( this ) );
         element.appendChild( removeElement );
         
         var listElement = this.completionsListElement = document.createElement( 'div' );
@@ -578,7 +579,7 @@
             if ( this.options.completionFormatter ) {
                 this.options.completionFormatter( datum, element );
             }
-            element.addEventListener( 'click', this.onCompletionClick.bind( this ) );
+            this.addEventListener( element, 'click', this.onCompletionClick.bind( this ) );
             containerElement.appendChild( element );
             
             this.completionElements.push( element );
@@ -779,11 +780,11 @@
         if ( this.options.tokenFormatter ) {
             this.options.tokenFormatter( datum, element );
         }
-        element.addEventListener( 'click', this.onTokenClick.bind( this ) );
+        this.addEventListener( element, 'click', this.onTokenClick.bind( this ) );
         
         if ( !this.options.readOnly ) {
             var removeElement = this._createRemoveElement();
-            removeElement.addEventListener( 'click', this.onRemoveTokenClick.bind( this ) );
+            this.addEventListener( removeElement, 'click', this.onRemoveTokenClick.bind( this ) );
             element.appendChild( removeElement );
         }
         
@@ -1019,8 +1020,8 @@
 
     T.prototype.setupRepositionListeners = function() {
         
-        window.addEventListener( 'resize', this.positionFloatingElementAfterDelay.bind( this ) );
-        window.addEventListener( 'scroll', this.positionFloatingElementAfterDelay.bind( this ) );
+        this.addEventListener( window, 'resize', this.positionFloatingElementAfterDelay.bind( this ) );
+        this.addEventListener( window, 'scroll', this.positionFloatingElementAfterDelay.bind( this ) );
         
     };
     
@@ -1077,6 +1078,25 @@
         
     };
     
+    T.prototype.addEventListener = function( element, type, listener ) {
+        
+        this.eventListeners.push( [
+            element, type, listener
+        ] );
+        element.addEventListener( type, listener );
+        
+    };
+    
+    T.prototype.destroy = function() {
+        
+        this.eventListeners
+            .forEach( function( listener ) {
+                listener[ 0 ].removeEventListener( listener[ 1 ], listener[ 2 ] );
+            } );
+        delete this.eventListeners;
+        
+    };
+    
     //
     
     function TokenInput() {
@@ -1092,7 +1112,8 @@
             'setCompletionGroups',
             'removeFloatingElement',
             'removeToken',
-            'setTokens'
+            'setTokens',
+            'destroy'
             
         ].forEach( function( method ) {
             
