@@ -706,12 +706,16 @@
         var element = this.completionElements[ this.selectedCompletionIndex ];
         element.classList.remove( 'selected' );
         
+        element.parentNode.classList.remove( 'hasSelected' );
+        
     };
 
     T.prototype.selectCompletion = function() {
         
         var element = this.completionElements[ this.selectedCompletionIndex ];
         element.classList.add( 'selected' );
+        
+        element.parentNode.classList.add( 'hasSelected' );
         
     };
 
