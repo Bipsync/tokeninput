@@ -213,11 +213,14 @@
             
         }
         
+        this.autoGrowInputElement();
+        
     };
 
     T.prototype.onInput = function() {
         
         this.suggestCompletions();
+        this.autoGrowInputElement();
         
     };
 
@@ -1088,6 +1091,19 @@
             element, type, listener
         ] );
         element.addEventListener( type, listener );
+        
+    };
+    
+    T.prototype.autoGrowInputElement = function() {
+        
+        var el = this.inputElement,
+            placeholderLength = el.placeholder.length;
+        if ( el.value.length && el.value.length > placeholderLength ) {
+            el.size = el.value.length;
+        }
+        else if ( placeholderLength ) {
+            el.size = placeholderLength;
+        }
         
     };
     

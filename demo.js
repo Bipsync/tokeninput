@@ -165,6 +165,16 @@ window.addEventListener( 'load', function() {
             completionFormatter : function( datum, element ) {
                 element.innerText += ' FORMATTED';
             }
+        }, { 
+            id : 'demo15',
+            data : [
+                { text: 'Red' },
+                { text: 'Green' },
+                { text: 'Blue' },
+                { text: 'Purple' },
+                { text: 'Orange' },
+                { text: 'Navy' }
+            ]
         }  
     ].forEach( function( options ) {
         
