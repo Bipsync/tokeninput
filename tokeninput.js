@@ -44,7 +44,9 @@
             positionFloatingElement : null, /* function( floatingElement ){} */
 
             hintElement : null,
-            hintAfterAdd : false
+            hintAfterAdd : false,
+
+            placeholderLength : null
 
         }, options || {} );
 
@@ -1101,7 +1103,7 @@
     T.prototype.autoGrowInputElement = function() {
 
         var el = this.inputElement,
-            placeholderLength = el.placeholder.length;
+            placeholderLength = this.options.placeholderLength || el.placeholder.length;
         if ( el.value.length && el.value.length > placeholderLength ) {
             el.size = el.value.length;
         }
