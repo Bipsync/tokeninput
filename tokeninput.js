@@ -681,6 +681,7 @@
         }
 
         this.floatingElement.style.left = inputLeft + 'px';
+        this.floatingElement.style.right = 'auto';
         this.floatingElement.style.top = inputTop + this.inputElement.offsetHeight + 'px';
 
         this.completionsAboveInput = false;
@@ -701,6 +702,12 @@
             else {
                 this.completionsAboveInput = true;
             }
+
+        }
+        if ( rect.right > document.documentElement.clientWidth ) {
+
+            this.floatingElement.style.left = 'auto';
+            this.floatingElement.style.right = '0';
 
         }
 
