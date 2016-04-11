@@ -1118,7 +1118,9 @@
         else if ( placeholderLength ) {
             targetSize = placeholderLength;
         }
-        el.size = targetSize + 1;
+        if ( targetSize ) {
+            el.size = targetSize + 1;
+        }
 
     };
 
