@@ -1110,13 +1110,15 @@
     T.prototype.autoGrowInputElement = function() {
 
         var el = this.inputElement,
-            placeholderLength = this.options.placeholderLength || el.placeholder.length;
+            placeholderLength = this.options.placeholderLength || el.placeholder.length,
+            targetSize;
         if ( el.value.length && el.value.length > placeholderLength ) {
-            el.size = el.value.length;
+            targetSize = el.value.length;
         }
         else if ( placeholderLength ) {
-            el.size = placeholderLength;
+            targetSize = placeholderLength;
         }
+        el.size = targetSize + 1;
 
     };
 
