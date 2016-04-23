@@ -806,6 +806,9 @@
 
         if ( !options.silent ) {
             this.dispatchEvent( 'willAdd', datum );
+            if ( datum.abortAdd ) {
+                return;
+            }
         }
 
         var element = document.createElement( 'div' );
