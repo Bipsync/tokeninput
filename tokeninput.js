@@ -217,6 +217,20 @@
 
         this.autoGrowInputElement();
 
+        this.addEventListener( element, 'focus', function() {
+
+            this.hasFocus = true;
+
+        }.bind( this ) );
+
+        this.addEventListener( element, 'blur', function() {
+
+            this.hasFocus = false;
+            this.inputElement.value = '';
+            this.removeFloatingElement();
+
+        }.bind( this ) );
+
     };
 
     T.prototype.onInput = function() {
@@ -473,6 +487,9 @@
                     function( delayedCompletionsId, delayedCompletions ) {
 
                         if ( delayedCompletionsId != this.nextDelayedCompletionsId ) {
+                            return;
+                        }
+                        if ( !this.hasFocus ) {
                             return;
                         }
                         this.suggestCompletions( {
