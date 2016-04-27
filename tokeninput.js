@@ -225,9 +225,11 @@
 
         this.addEventListener( element, 'blur', function() {
 
-            this.hasFocus = false;
-            this.inputElement.value = '';
-            this.removeFloatingElement();
+            setTimeout( function() {
+                this.hasFocus = false;
+                this.inputElement.value = '';
+                this.removeFloatingElement();
+            }, 0 );
 
         }.bind( this ) );
 
