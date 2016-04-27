@@ -229,7 +229,7 @@
                 this.hasFocus = false;
                 this.inputElement.value = '';
                 this.removeFloatingElement();
-            }, 0 );
+            }.bind( this ), 500 );
 
         }.bind( this ) );
 
