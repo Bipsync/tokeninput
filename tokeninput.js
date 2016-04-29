@@ -32,7 +32,6 @@
             ]; },
             completionGroupHeadingClassNames : function( /* completionGroup */ ) { return []; },
             autoSelectSingleCompletions : true,
-            documentClickHidesCompletions : true,
 
             completionGroups : {},
             newCompletionOption : function( group/*, text */ ) {
@@ -172,18 +171,6 @@
 
         }.bind( this ) );
 
-        if ( this.options.documentClickHidesCompletions ) {
-
-            this.addEventListener( document.documentElement, 'click', function() {
-
-                if ( this.completions.length ) {
-                    this.removeCompletions();
-                }
-
-            }.bind( this ) );
-
-        }
-
         if ( this.options.containerClickTriggersFocus ) {
 
             this.addEventListener( element.parentNode, 'click', function() {
@@ -217,19 +204,12 @@
 
         this.autoGrowInputElement();
 
-        this.addEventListener( element, 'focus', function() {
-
-            this.hasFocus = true;
-
-        }.bind( this ) );
-
         this.addEventListener( element, 'blur', function() {
 
             setTimeout( function() {
-                this.hasFocus = false;
                 this.inputElement.value = '';
                 this.removeFloatingElement();
-            }.bind( this ), 500 );
+            }.bind( this ), 100 );
 
         }.bind( this ) );
 
@@ -491,9 +471,6 @@
                         if ( delayedCompletionsId != this.nextDelayedCompletionsId ) {
                             return;
                         }
-                        if ( !this.hasFocus ) {
-                            return;
-                        }
                         this.suggestCompletions( {
                             completions : delayedCompletions,
                             preserveSelection : true
@@ -603,7 +580,13 @@
             if ( this.options.completionFormatter ) {
                 this.options.completionFormatter( datum, element );
             }
-            this.addEventListener( element, 'click', this.onCompletionClick.bind( this ) );
+            this.addEventListener( element, 'mousedown', function( e ) {
+
+                e.preventDefault();
+                this.onCompletionClick( element );
+                return false;
+
+            }.bind( this ) );
             containerElement.appendChild( element );
 
             this.completionElements.push( element );
@@ -653,9 +636,9 @@
 
     };
 
-    T.prototype.onCompletionClick = function( e ) {
+    T.prototype.onCompletionClick = function( element ) {
 
-        var index = this.completionElements.indexOf( e.target );
+        var index = this.completionElements.indexOf( element );
         if ( index != -1 ) {
 
             this.selectedCompletionIndex = index;
@@ -664,9 +647,6 @@
             this.inputElement.focus();
 
         }
-
-        e.preventDefault();
-        return false;
 
     };
 
