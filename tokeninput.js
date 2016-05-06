@@ -752,6 +752,29 @@
             element.parentNode.classList.add( 'hasSelectedFirst' );
         }
 
+        if ( !this.floatingElement ) {
+            return;
+        }
+
+        var elementTop = 0,
+            e = element;
+        while ( e != this.floatingElement ) {
+            elementTop += e.offsetTop;
+            e = e.offsetParent;
+        }
+
+        var topOffset = elementTop - this.floatingElement.scrollTop;
+        if ( topOffset < 0 ) {
+            this.floatingElement.scrollTop += topOffset;
+        }
+        else {
+            var bottomOffset = ( elementTop + element.offsetHeight ) -
+                ( this.floatingElement.scrollTop + this.floatingElement.offsetHeight );
+            if ( bottomOffset > 0 ) {
+                this.floatingElement.scrollTop += bottomOffset;
+            }
+        }
+
     };
 
     T.prototype.removeCompletions = function() {
