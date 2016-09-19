@@ -41,6 +41,7 @@
             },
 
             positionFloatingElement : null, /* function( floatingElement ){} */
+            floatingElementParent : null,
 
             hintElement : null,
             hintAfterAdd : false,
@@ -440,7 +441,11 @@
         listElement.className = 'list';
         element.appendChild( listElement );
 
-        this.inputElement.parentNode.appendChild( element );
+        var floatingElementParent = ( this.options.floatingElementParent || this.inputElement.parentNode );
+        if ( typeof floatingElementParent == 'function' ) {
+            floatingElementParent = floatingElementParent();
+        }
+        floatingElementParent.appendChild( element );
 
         this.floatingElement = element;
 
