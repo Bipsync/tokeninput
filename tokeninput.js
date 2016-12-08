@@ -23,6 +23,8 @@
             willShowFreeTextCompletion : function( text, completions ) {
                 return ( text.length && completions.length > 1 );
             },
+            inlineTokensEnabled : false,
+            inlineTriggerRegExp : /(^|\s)[@|#](\w*)$/,
 
             completionsForText : function( /* text, delayedCompletionsId, delayedCompletionsFn */ ) { return []; },
             completionClassNames : function( /* datum */ ) { return []; },
@@ -141,7 +143,7 @@
 
         this.inputElement = element;
 
-        this.addEventListener( element, 'input', function() {
+        this.addEventListener( element, 'input', function( e ) {
 
             this.onInput();
 
@@ -208,7 +210,7 @@
         this.addEventListener( element, 'blur', function() {
 
             setTimeout( function() {
-                this.inputElement.value = '';
+                this.setInputElementValue( '' );
                 this.removeFloatingElement();
             }.bind( this ), 100 );
 
@@ -218,8 +220,18 @@
 
     T.prototype.onInput = function() {
 
-        this.suggestCompletions();
-        this.autoGrowInputElement();
+        if ( this.options.inlineTokensEnabled ) {
+            var match = this.getInputElementValue().match( this.options.inlineTriggerRegExp );
+            if ( match && match[ 2 ] ) {
+                this.suggestCompletions( match[ 2 ] );
+                this.autoGrowInputElement();
+            } else {
+                this.removeFloatingElement();
+            }
+        } else {
+            this.suggestCompletions();
+            this.autoGrowInputElement();
+        }
 
     };
 
@@ -286,8 +298,8 @@
             this.deselectToken();
             delete this.selectedTokenIndex;
         }
-        else if ( this.inputElement.value.length ) {
-            this.inputElement.value = '';
+        else if ( this.getInputElementValue().length ) {
+            this.setInputElementValue( '' );
         }
         else if ( this.floatingElement ) {
             this.removeFloatingElement();
@@ -300,8 +312,7 @@
         if ( this.selectedCompletionIndex !== undefined ) {
             e.preventDefault();
             this.addTokenFromSelectedCompletion();
-        }
-        else if ( this.options.freeTextEnabled !== false && this.inputElement.value.length ) {
+        } else if ( this.options.inlineTokensEnabled === false && this.options.freeTextEnabled !== false && this.getInputElementValue().length ) {
             e.preventDefault();
             this.addTokenFromInputElement();
         }
@@ -314,7 +325,7 @@
             this.tokens.length &&
             this.inputElement.selectionStart === 0 &&
             this.inputElement.selectionEnd === 0 &&
-            this.inputElement.value.length === 0
+            this.getInputElementValue().length === 0
         ) {
             e.preventDefault();
             if ( this.selectedTokenIndex !== undefined ) {
@@ -335,7 +346,7 @@
 
         if (
             this.selectedTokenIndex !== undefined &&
-            this.inputElement.value.length === 0
+            this.getInputElementValue().length === 0
         ) {
             e.preventDefault();
             if ( this.selectedTokenIndex < this.tokens.length - 1 ) {
@@ -355,7 +366,7 @@
 
         if (
             this.selectedTokenIndex !== undefined &&
-            this.inputElement.value.length === 0
+            this.getInputElementValue().length === 0
         ) {
             e.preventDefault();
 
@@ -395,7 +406,7 @@
             return;
         }
 
-        if ( this.inputElement.value.length ) {
+        if ( this.getInputElementValue().length ) {
             return;
         }
 
@@ -462,13 +473,14 @@
 
     };
 
-    T.prototype.suggestCompletions = function( options ) {
+    T.prototype.suggestCompletions = function( match, options ) {
 
+        match = match || '';
         options = options || {};
 
         this.nextDelayedCompletionsId = this.nextDelayedCompletionsId || 0;
 
-        var text = this.inputElement.value,
+        var text = match ? match : this.getInputElementValue(),
             completions = options.completions ? options.completions.slice( 0 ) :
                 this.options.completionsForText( text, ++this.nextDelayedCompletionsId,
                     function( delayedCompletionsId, delayedCompletions ) {
@@ -790,7 +802,7 @@
 
     T.prototype.addTokenFromInputElement = function() {
 
-        this.addToken( this.options.freeTextToken( this.inputElement.value ) );
+        this.addToken( this.options.freeTextToken( this.getInputElementValue() ) );
 
         this.afterUsersAddsToken();
 
@@ -798,7 +810,7 @@
 
     T.prototype.afterUsersAddsToken = function() {
 
-        this.inputElement.value = '';
+        // this.setInputElementValue( '' );
 
         if ( this.completions.length ) {
             this.removeCompletions();
@@ -810,7 +822,30 @@
 
     };
 
+    T.prototype.addInlineToken = function( datum, options ) {
+
+        options = options || {};
+
+        console.log( 'tokeninput.js:830 - datum', datum );
+
+        var inlineTag = ' <a href="#" data-id="' + datum.value + '" class="inlineTag">' + datum.text + '</a>';
+
+        console.log( 'tokeninput.js:833 - this.getInputElementValue()', this.getInputElementValue() );
+
+        var newValue = this.getInputElementValue().replace( this.options.inlineTriggerRegExp, inlineTag );
+
+        console.log( 'tokeninput.js:837 - newValue', newValue );
+
+        this.setInputElementValue( newValue );
+
+    };
+
     T.prototype.addToken = function( datum, options ) {
+
+        if ( this.options.inlineTokensEnabled ) {
+            this.addInlineToken( datum, options );
+            return;
+        }
 
         options = options || {};
 
@@ -891,7 +926,7 @@
             this.selectedTokenIndex = index;
             this.selectToken();
 
-            this.inputElement.value = '';
+            this.setInputElementValue( '' );
             this.inputElement.focus();
 
             var token = this.tokens[ this.selectedTokenIndex ];
@@ -1139,10 +1174,12 @@
 
     T.prototype.autoGrowInputElement = function() {
 
+        return;
+
         var el = this.inputElement,
             placeholderLength = this.options.placeholderLength || el.placeholder.length,
             targetSize;
-        if ( el.value.length && el.value.length > placeholderLength ) {
+        if ( el.value && el.value.length && el.value.length > placeholderLength ) {
             targetSize = el.value.length;
         }
         else if ( placeholderLength ) {
@@ -1161,6 +1198,26 @@
                 listener[ 0 ].removeEventListener( listener[ 1 ], listener[ 2 ] );
             } );
         delete this.eventListeners;
+
+    };
+
+    T.prototype.getInputElementValue = function() {
+
+        if ( this.inputElement.value ) {
+            return this.inputElement.value;
+        }
+
+        return this.inputElement.innerHTML;
+
+    };
+
+    T.prototype.setInputElementValue = function( value ) {
+        
+        if ( this.inputElement.value ) {
+            this.inputElement.value = value;
+        }
+
+        this.inputElement.innerHTML = value;
 
     };
 

@@ -41,6 +41,12 @@ window.addEventListener( 'load', function() {
 
     [ 
         { 
+            id : 'demo0', 
+            completionsForText : completionsForTextWithSuggestions( defaultSuggestions ),
+            inlineTokensEnabled : true,
+            selector : '[contenteditable]'
+        },
+        { 
             id : 'demo1', 
             completionsForText : completionsForTextWithSuggestions( defaultSuggestions )
         }, { 
@@ -179,10 +185,12 @@ window.addEventListener( 'load', function() {
     ].forEach( function( options ) {
         
         var id = options.id,
+            selector = options.selector ? options.selector : 'input',
             container = document.getElementById( id ),
-            inputElement = container.getElementsByTagName( 'input' )[ 0 ];
+            inputElement = container.querySelector( selector );
             
         delete options.id;
+        delete options.selector;
         
         var tokenInput = new TokenInput( inputElement, options );
         
