@@ -13,6 +13,9 @@
             xHTML : '&times;',
             tokenClassNames : function( /* datum */ ) { return []; },
             tokenFormatter : function( /* datum, element */ ) {},
+            inlineTokenFormatter : function( datum ) {
+                return ' <a href="' + datum.link + '" data-id="' + datum.value + '" class="' + datum.classes + '">' + datum.text + '</a>';
+            },
             containerClickTriggersFocus : true,
 
             freeTextEnabled : false,
@@ -23,6 +26,8 @@
             willShowFreeTextCompletion : function( text, completions ) {
                 return ( text.length && completions.length > 1 );
             },
+            inlineTokensEnabled : false,
+            inlineTriggerRegExp : /(^|\s*)[@|#](\w*)$/,
 
             completionsForText : function( /* text, delayedCompletionsId, delayedCompletionsFn */ ) { return []; },
             completionClassNames : function( /* datum */ ) { return []; },
@@ -208,7 +213,7 @@
         this.addEventListener( element, 'blur', function() {
 
             setTimeout( function() {
-                this.inputElement.value = '';
+                this.setInputElementValue( '' );
                 this.removeFloatingElement();
             }.bind( this ), 100 );
 
@@ -218,8 +223,18 @@
 
     T.prototype.onInput = function() {
 
-        this.suggestCompletions();
-        this.autoGrowInputElement();
+        if ( this.options.inlineTokensEnabled ) {
+            var match = this.getInputElementValue().match( this.options.inlineTriggerRegExp );
+            if ( match && match[ 2 ] ) {
+                this.suggestCompletions( {}, match[ 2 ] );
+                this.autoGrowInputElement();
+            } else {
+                this.removeFloatingElement();
+            }
+        } else {
+            this.suggestCompletions();
+            this.autoGrowInputElement();
+        }
 
     };
 
@@ -286,8 +301,8 @@
             this.deselectToken();
             delete this.selectedTokenIndex;
         }
-        else if ( this.inputElement.value.length ) {
-            this.inputElement.value = '';
+        else if ( this.getInputElementValue().length ) {
+            this.setInputElementValue( '' );
         }
         else if ( this.floatingElement ) {
             this.removeFloatingElement();
@@ -300,8 +315,7 @@
         if ( this.selectedCompletionIndex !== undefined ) {
             e.preventDefault();
             this.addTokenFromSelectedCompletion();
-        }
-        else if ( this.options.freeTextEnabled !== false && this.inputElement.value.length ) {
+        } else if ( this.options.inlineTokensEnabled === false && this.options.freeTextEnabled !== false && this.getInputElementValue().length ) {
             e.preventDefault();
             this.addTokenFromInputElement();
         }
@@ -314,7 +328,7 @@
             this.tokens.length &&
             this.inputElement.selectionStart === 0 &&
             this.inputElement.selectionEnd === 0 &&
-            this.inputElement.value.length === 0
+            this.getInputElementValue().length === 0
         ) {
             e.preventDefault();
             if ( this.selectedTokenIndex !== undefined ) {
@@ -335,7 +349,7 @@
 
         if (
             this.selectedTokenIndex !== undefined &&
-            this.inputElement.value.length === 0
+            this.getInputElementValue().length === 0
         ) {
             e.preventDefault();
             if ( this.selectedTokenIndex < this.tokens.length - 1 ) {
@@ -355,7 +369,7 @@
 
         if (
             this.selectedTokenIndex !== undefined &&
-            this.inputElement.value.length === 0
+            this.getInputElementValue().length === 0
         ) {
             e.preventDefault();
 
@@ -395,7 +409,7 @@
             return;
         }
 
-        if ( this.inputElement.value.length ) {
+        if ( this.getInputElementValue().length ) {
             return;
         }
 
@@ -462,13 +476,14 @@
 
     };
 
-    T.prototype.suggestCompletions = function( options ) {
+    T.prototype.suggestCompletions = function( options, match ) {
 
+        match = match || null;
         options = options || {};
 
         this.nextDelayedCompletionsId = this.nextDelayedCompletionsId || 0;
 
-        var text = this.inputElement.value,
+        var text = typeof match === 'string' ? match : this.getInputElementValue(),
             completions = options.completions ? options.completions.slice( 0 ) :
                 this.options.completionsForText( text, ++this.nextDelayedCompletionsId,
                     function( delayedCompletionsId, delayedCompletions ) {
@@ -476,10 +491,14 @@
                         if ( delayedCompletionsId != this.nextDelayedCompletionsId ) {
                             return;
                         }
-                        this.suggestCompletions( {
-                            completions : delayedCompletions,
-                            preserveSelection : true
-                        } );
+
+                        this.suggestCompletions(
+                            {
+                                completions : delayedCompletions,
+                                preserveSelection : true
+                            },
+                            text
+                        );
 
                     }.bind( this ) ).slice( 0 );
 
@@ -675,8 +694,8 @@
 
         while ( element ) {
             if ( /^(absolute|relative)$/.test(
-                document.defaultView.getComputedStyle( element, null ).getPropertyValue( 'position' )
-            ) ) {
+                    document.defaultView.getComputedStyle( element, null ).getPropertyValue( 'position' )
+                ) ) {
                 break;
             }
             inputLeft += element.offsetLeft;
@@ -687,6 +706,7 @@
         this.floatingElement.style.left = inputLeft + 'px';
         this.floatingElement.style.right = 'auto';
         this.floatingElement.style.top = inputTop + this.inputElement.offsetHeight + 'px';
+        this.floatingElement.style.bottom = 'auto';
 
         this.completionsAboveInput = false;
 
@@ -790,7 +810,7 @@
 
     T.prototype.addTokenFromInputElement = function() {
 
-        this.addToken( this.options.freeTextToken( this.inputElement.value ) );
+        this.addToken( this.options.freeTextToken( this.getInputElementValue() ) );
 
         this.afterUsersAddsToken();
 
@@ -798,7 +818,7 @@
 
     T.prototype.afterUsersAddsToken = function() {
 
-        this.inputElement.value = '';
+        this.setInputElementValue( '' );
 
         if ( this.completions.length ) {
             this.removeCompletions();
@@ -810,7 +830,27 @@
 
     };
 
+    T.prototype.addInlineToken = function( datum, options ) {
+
+        options = options || {};
+
+        datum.link = datum.link || '#';
+        datum.classes = datum.classes || 'inlineTag';
+
+        var inlineTag = this.options.inlineTokenFormatter( datum );
+
+        var newValue = this.getInputElementValue().replace( this.options.inlineTriggerRegExp, inlineTag );
+
+        this.setInputElementValue( newValue );
+
+    };
+
     T.prototype.addToken = function( datum, options ) {
+
+        if ( this.options.inlineTokensEnabled ) {
+            this.addInlineToken( datum, options );
+            return;
+        }
 
         options = options || {};
 
@@ -891,7 +931,7 @@
             this.selectedTokenIndex = index;
             this.selectToken();
 
-            this.inputElement.value = '';
+            this.setInputElementValue( '' );
             this.inputElement.focus();
 
             var token = this.tokens[ this.selectedTokenIndex ];
@@ -1139,6 +1179,10 @@
 
     T.prototype.autoGrowInputElement = function() {
 
+        if ( this.options.inlineTokensEnabled ) {
+            return;
+        }
+
         var el = this.inputElement,
             placeholderLength = this.options.placeholderLength || el.placeholder.length,
             targetSize;
@@ -1161,6 +1205,31 @@
                 listener[ 0 ].removeEventListener( listener[ 1 ], listener[ 2 ] );
             } );
         delete this.eventListeners;
+
+    };
+
+    T.prototype.getInputElementValue = function() {
+
+        if ( this.options.inlineTokensEnabled ) {
+            return this.inputElement.innerHTML;
+        }
+
+        return this.inputElement.value;
+
+    };
+
+    T.prototype.setInputElementValue = function( value ) {
+
+        if ( this.options.inlineTokensEnabled ) {
+            if ( value === '' ) {
+                return;
+            }
+
+            this.inputElement.innerHTML = value;
+            return;
+        }
+
+        this.inputElement.value = value;
 
     };
 
