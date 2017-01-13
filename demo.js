@@ -197,14 +197,16 @@ window.addEventListener( 'load', function() {
     ].forEach( function( options ) {
 
         var id = options.id,
-            selector = typeof (options.selector) !== 'undefined' ? options.selector : 'input',
             container = document.getElementById( id ),
-            inputElement = container.querySelector( selector );
+            inputElement = container.querySelector( options.selector || 'input' );
 
         delete options.id;
         delete options.selector;
 
         var tokenInput = new TokenInput( inputElement, options );
+
+        window.tokenInputs = window.tokenInputs || [];
+        window.tokenInputs.push( tokenInput );
 
         inputElement.addEventListener( 'change', function() {
             window.setTimeout( function() {
