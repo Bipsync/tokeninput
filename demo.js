@@ -52,147 +52,148 @@ window.addEventListener( 'load', function() {
 
     [
         {
-            id : 'demo0',
-            completionsForText : completionsForTextWithSuggestions( freeTextSuggestions ),
-            inlineTokensEnabled : true,
-            selector : '[contenteditable]'
-        },
-        {
             id : 'demo1',
             completionsForText : completionsForTextWithSuggestions( defaultSuggestions )
         }, {
-        id : 'demo2'
-    }, {
-        id : 'demo3',
-        freeTextEnabled : false,
-        completionsForText : completionsForTextWithSuggestions( defaultSuggestions )
-    }, {
-        id : 'demo4',
-        completionsForText : completionsForTextWithSuggestions( defaultSuggestions ),
-        data : [
-            { text: 'Existing', value : 2 },
-            { text: 'Tokens', value : 3 }
-        ]
-    }, {
-        id : 'demo5',
-        completionsForText : completionsForTextWithSuggestions( defaultSuggestions ),
-        data : [
-            { text: 'Existing', value : 2, type : 'red' },
-            { text: 'Tokens', value : 3, type : 'green' },
-            { text: 'With classes', value : 4, type : 'blue' }
-        ],
-        tokenClassNames : function( datum ) {
-            return [ datum.type ];
-        },
-        completionClassNames : function( datum ) {
-            return [ datum.type ];
-        }
-    }, {
-        id : 'demo6',
-        freeTextEnabled : true,
-        completionsForText : completionsForTextWithSuggestions( defaultSuggestions )
-    }, {
-        id : 'demo7',
-        completionGroups : {
-            fruits : { heading : 'Fruits' },
-            vehicles : { heading : 'Vehicles' },
-            colours : { heading : 'Colours' }
-        },
-        completionsForText : completionsForTextWithSuggestions( groupedSuggestions )
-    }, {
-        id : 'demo8',
-        completionGroups : {
-            fruits : { heading : 'Fruits', newOption : true, singular : 'Fruit' },
-            vehicles : { heading : 'Vehicles' },
-            colours : { heading : 'Colours', newOption : true }
-        },
-        completionsForText : completionsForTextWithSuggestions( groupedSuggestions )
-    }, {
-        id : 'demo10',
-        completionsForText : completionsForTextWithSuggestions( groupedSuggestions ),
-        completionGroups : {
-            fruits : { heading : 'Fruits', newOption : true, singular : 'Fruit' },
-            vehicles : { heading : 'Vehicles' },
-            colours : { heading : 'Colours', newOption : true }
-        },
-        hintElement : document.getElementById( 'demo10hints' )
-    }, {
-        id : 'demo11',
-        completionsForText : completionsForTextWithSuggestions( groupedSuggestions ),
-        completionGroups : {
-            fruits : { heading : 'Fruits', newOption : true, singular : 'Fruit' },
-            vehicles : { heading : 'Vehicles' },
-            colours : { heading : 'Colours', newOption : true }
-        },
-        hintElement : document.getElementById( 'demo11hints' ),
-        hintAfterAdd : true,
-    }, {
-        id : 'demo12',
-        completionsForText : function( text, delayedId, delayedFn ) {
-
-            var completions = completionsForTextWithSuggestions( groupedSuggestions )( text );
-            if ( text.length ) {
-                setTimeout( function() {
-                    delayedFn( delayedId, completions.concat( [ {
-                        text : 'Delayed Colour',
-                        group : 'colours'
-                    }, {
-                        text : 'Pink',
-                        group : 'colours'
-                    } ] ) );
-                }, 1000 );
+            id : 'demo2'
+        }, {
+            id : 'demo3',
+            freeTextEnabled : false,
+            completionsForText : completionsForTextWithSuggestions( defaultSuggestions )
+        }, {
+            id : 'demo4',
+            completionsForText : completionsForTextWithSuggestions( defaultSuggestions ),
+            data : [
+                { text: 'Existing', value : 2 },
+                { text: 'Tokens', value : 3 }
+            ]
+        }, {
+            id : 'demo5',
+            completionsForText : completionsForTextWithSuggestions( defaultSuggestions ),
+            data : [
+                { text: 'Existing', value : 2, type : 'red' },
+                { text: 'Tokens', value : 3, type : 'green' },
+                { text: 'With classes', value : 4, type : 'blue' }
+            ],
+            tokenClassNames : function( datum ) {
+                return [ datum.type ];
+            },
+            completionClassNames : function( datum ) {
+                return [ datum.type ];
             }
-            return completions;
+        }, {
+            id : 'demo6',
+            freeTextEnabled : true,
+            completionsForText : completionsForTextWithSuggestions( defaultSuggestions )
+        }, {
+            id : 'demo7',
+            completionGroups : {
+                fruits : { heading : 'Fruits' },
+                vehicles : { heading : 'Vehicles' },
+                colours : { heading : 'Colours' }
+            },
+            completionsForText : completionsForTextWithSuggestions( groupedSuggestions )
+        }, {
+            id : 'demo8',
+            completionGroups : {
+                fruits : { heading : 'Fruits', newOption : true, singular : 'Fruit' },
+                vehicles : { heading : 'Vehicles' },
+                colours : { heading : 'Colours', newOption : true }
+            },
+            completionsForText : completionsForTextWithSuggestions( groupedSuggestions )
+        }, {
+            id : 'demo10',
+            completionsForText : completionsForTextWithSuggestions( groupedSuggestions ),
+            completionGroups : {
+                fruits : { heading : 'Fruits', newOption : true, singular : 'Fruit' },
+                vehicles : { heading : 'Vehicles' },
+                colours : { heading : 'Colours', newOption : true }
+            },
+            hintElement : document.getElementById( 'demo10hints' )
+        }, {
+            id : 'demo11',
+            completionsForText : completionsForTextWithSuggestions( groupedSuggestions ),
+            completionGroups : {
+                fruits : { heading : 'Fruits', newOption : true, singular : 'Fruit' },
+                vehicles : { heading : 'Vehicles' },
+                colours : { heading : 'Colours', newOption : true }
+            },
+            hintElement : document.getElementById( 'demo11hints' ),
+            hintAfterAdd : true,
+        }, {
+            id : 'demo12',
+            completionsForText : function( text, delayedId, delayedFn ) {
 
-        },
-        completionGroups : {
-            fruits : { heading : 'Fruits', newOption : true, singular : 'Fruit' },
-            vehicles : { heading : 'Vehicles' },
-            colours : { heading : 'Colours', newOption : true }
-        }
-    }, {
-        id : 'demo13',
-        completionsForText : function( text ) {
-
-            var completions = completionsForTextWithSuggestions( groupedSuggestions )( text );
-            if ( completions.length ) {
-                var bestMatch = {};
-                for ( var key in completions[ 0 ] ) {
-                    bestMatch[ key ] = completions[ 0 ][ key ];
+                var completions = completionsForTextWithSuggestions( groupedSuggestions )( text );
+                if ( text.length ) {
+                    setTimeout( function() {
+                        delayedFn( delayedId, completions.concat( [ {
+                            text : 'Delayed Colour',
+                            group : 'colours'
+                        }, {
+                            text : 'Pink',
+                            group : 'colours'
+                        } ] ) );
+                    }, 1000 );
                 }
-                bestMatch.displayGroup = 'bestmatch';
-                bestMatch.select = true;
-                completions = [ bestMatch ].concat( completions );
-            }
-            return completions;
+                return completions;
 
-        },
-        completionGroups : {
-            bestmatch : { heading : 'Best Match' },
-            fruits : { heading : 'Fruits', newOption : true, singular : 'Fruit' },
-            vehicles : { heading : 'Vehicles' },
-            colours : { heading : 'Colours', newOption : true }
+            },
+            completionGroups : {
+                fruits : { heading : 'Fruits', newOption : true, singular : 'Fruit' },
+                vehicles : { heading : 'Vehicles' },
+                colours : { heading : 'Colours', newOption : true }
+            }
+        }, {
+            id : 'demo13',
+            completionsForText : function( text ) {
+
+                var completions = completionsForTextWithSuggestions( groupedSuggestions )( text );
+                if ( completions.length ) {
+                    var bestMatch = {};
+                    for ( var key in completions[ 0 ] ) {
+                        bestMatch[ key ] = completions[ 0 ][ key ];
+                    }
+                    bestMatch.displayGroup = 'bestmatch';
+                    bestMatch.select = true;
+                    completions = [ bestMatch ].concat( completions );
+                }
+                return completions;
+
+            },
+            completionGroups : {
+                bestmatch : { heading : 'Best Match' },
+                fruits : { heading : 'Fruits', newOption : true, singular : 'Fruit' },
+                vehicles : { heading : 'Vehicles' },
+                colours : { heading : 'Colours', newOption : true }
+            }
+        }, {
+            id : 'demo14',
+            completionsForText : completionsForTextWithSuggestions( defaultSuggestions ),
+            tokenFormatter : function( datum, element ) {
+                element.innerText += ' FORMATTED';
+            },
+            completionFormatter : function( datum, element ) {
+                element.innerText += ' FORMATTED';
+            }
+        }, {
+            id : 'demo15',
+            data : [
+                { text: 'Red' },
+                { text: 'Green' },
+                { text: 'Blue' },
+                { text: 'Purple' },
+                { text: 'Orange' },
+                { text: 'Navy' }
+            ]
+        }, {
+            id : 'demo16',
+            completionsForText : completionsForTextWithSuggestions( freeTextSuggestions ),
+            selector : '[contenteditable]',
+            inlineTokenFormatter : function( datum ) {
+                return '<span contenteditable="false" class="token">' + datum.text + '</span>';
+            }
         }
-    }, {
-        id : 'demo14',
-        completionsForText : completionsForTextWithSuggestions( defaultSuggestions ),
-        tokenFormatter : function( datum, element ) {
-            element.innerText += ' FORMATTED';
-        },
-        completionFormatter : function( datum, element ) {
-            element.innerText += ' FORMATTED';
-        }
-    }, {
-        id : 'demo15',
-        data : [
-            { text: 'Red' },
-            { text: 'Green' },
-            { text: 'Blue' },
-            { text: 'Purple' },
-            { text: 'Orange' },
-            { text: 'Navy' }
-        ]
-    }
     ].forEach( function( options ) {
 
         var id = options.id,
