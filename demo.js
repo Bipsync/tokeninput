@@ -1,5 +1,5 @@
 window.addEventListener( 'load', function() {
-    
+
     var defaultSuggestions = [
             { text: 'Aardvark', value : 1, type : 'red' },
             { text: 'Apple', value : 2, type : 'blue' },
@@ -10,19 +10,30 @@ window.addEventListener( 'load', function() {
             { text: 'Caravan', value : 7, type : 'red' },
             { text: 'Caviar', value : 8, type : 'blue' }
         ],
-        
-        groupedSuggestions = [ 
+
+        groupedSuggestions = [
             { text : 'Apple', group : 'fruits' },
             { text : 'Orange', group : 'fruits' },
             { text : 'Strawberry', group : 'fruits' },
-            { text : 'Car', group : 'vehicles' }, 
-            { text : 'Bus', group : 'vehicles' }, 
-            { text : 'Aeroplane', group : 'vehicles' }, 
-            { text : 'Azure', group : 'colours' }, 
-            { text : 'Aqua', group : 'colours' }, 
-            { text : 'Green', group : 'colours' } 
+            { text : 'Car', group : 'vehicles' },
+            { text : 'Bus', group : 'vehicles' },
+            { text : 'Aeroplane', group : 'vehicles' },
+            { text : 'Azure', group : 'colours' },
+            { text : 'Aqua', group : 'colours' },
+            { text : 'Green', group : 'colours' }
         ],
-        
+
+        freeTextSuggestions = [
+            { text: 'Aardvark', value : 1, type : 'red', classes : 'token', link: 'http://www.aardvark.com' },
+            { text: 'Apple', value : 2, type : 'blue', classes : 'token', link: 'http://www.apple.com' },
+            { text: 'Banana', value : 3, type : 'green', link: 'http://www.banana.com' },
+            { text: 'Cage', value : 4, type : 'red', link: 'http://www.banana.com' },
+            { text: 'Cab', value : 5, type : 'blue', link: 'http://www.cab.com' },
+            { text: 'Car', value : 6, type : 'green', link: 'http://www.car.com' },
+            { text: 'Caravan', value : 7, type : 'red', link: 'http://www.caravan.com' },
+            { text: 'Caviar', value : 8, type : 'blue', link: 'http://www.caviar.com' }
+        ],
+
         completionsForTextWithSuggestions = function( suggestions ) {
             return function( text ) {
                 var completions = [];
@@ -39,24 +50,24 @@ window.addEventListener( 'load', function() {
             };
         };
 
-    [ 
-        { 
-            id : 'demo1', 
+    [
+        {
+            id : 'demo1',
             completionsForText : completionsForTextWithSuggestions( defaultSuggestions )
-        }, { 
-            id : 'demo2' 
-        }, { 
+        }, {
+            id : 'demo2'
+        }, {
             id : 'demo3',
             freeTextEnabled : false,
-            completionsForText : completionsForTextWithSuggestions( defaultSuggestions ) 
-        }, { 
+            completionsForText : completionsForTextWithSuggestions( defaultSuggestions )
+        }, {
             id : 'demo4',
             completionsForText : completionsForTextWithSuggestions( defaultSuggestions ),
             data : [
                 { text: 'Existing', value : 2 },
                 { text: 'Tokens', value : 3 }
             ]
-        }, { 
+        }, {
             id : 'demo5',
             completionsForText : completionsForTextWithSuggestions( defaultSuggestions ),
             data : [
@@ -70,11 +81,11 @@ window.addEventListener( 'load', function() {
             completionClassNames : function( datum ) {
                 return [ datum.type ];
             }
-        }, { 
+        }, {
             id : 'demo6',
             freeTextEnabled : true,
             completionsForText : completionsForTextWithSuggestions( defaultSuggestions )
-        }, { 
+        }, {
             id : 'demo7',
             completionGroups : {
                 fruits : { heading : 'Fruits' },
@@ -82,7 +93,7 @@ window.addEventListener( 'load', function() {
                 colours : { heading : 'Colours' }
             },
             completionsForText : completionsForTextWithSuggestions( groupedSuggestions )
-        }, { 
+        }, {
             id : 'demo8',
             completionGroups : {
                 fruits : { heading : 'Fruits', newOption : true, singular : 'Fruit' },
@@ -90,7 +101,7 @@ window.addEventListener( 'load', function() {
                 colours : { heading : 'Colours', newOption : true }
             },
             completionsForText : completionsForTextWithSuggestions( groupedSuggestions )
-        }, { 
+        }, {
             id : 'demo10',
             completionsForText : completionsForTextWithSuggestions( groupedSuggestions ),
             completionGroups : {
@@ -99,7 +110,7 @@ window.addEventListener( 'load', function() {
                 colours : { heading : 'Colours', newOption : true }
             },
             hintElement : document.getElementById( 'demo10hints' )
-        }, { 
+        }, {
             id : 'demo11',
             completionsForText : completionsForTextWithSuggestions( groupedSuggestions ),
             completionGroups : {
@@ -109,10 +120,10 @@ window.addEventListener( 'load', function() {
             },
             hintElement : document.getElementById( 'demo11hints' ),
             hintAfterAdd : true,
-        }, { 
+        }, {
             id : 'demo12',
             completionsForText : function( text, delayedId, delayedFn ) {
-                
+
                 var completions = completionsForTextWithSuggestions( groupedSuggestions )( text );
                 if ( text.length ) {
                     setTimeout( function() {
@@ -126,17 +137,17 @@ window.addEventListener( 'load', function() {
                     }, 1000 );
                 }
                 return completions;
-                
+
             },
             completionGroups : {
                 fruits : { heading : 'Fruits', newOption : true, singular : 'Fruit' },
                 vehicles : { heading : 'Vehicles' },
                 colours : { heading : 'Colours', newOption : true }
             }
-        }, { 
+        }, {
             id : 'demo13',
             completionsForText : function( text ) {
-                
+
                 var completions = completionsForTextWithSuggestions( groupedSuggestions )( text );
                 if ( completions.length ) {
                     var bestMatch = {};
@@ -148,7 +159,7 @@ window.addEventListener( 'load', function() {
                     completions = [ bestMatch ].concat( completions );
                 }
                 return completions;
-                
+
             },
             completionGroups : {
                 bestmatch : { heading : 'Best Match' },
@@ -156,7 +167,7 @@ window.addEventListener( 'load', function() {
                 vehicles : { heading : 'Vehicles' },
                 colours : { heading : 'Colours', newOption : true }
             }
-        }, { 
+        }, {
             id : 'demo14',
             completionsForText : completionsForTextWithSuggestions( defaultSuggestions ),
             tokenFormatter : function( datum, element ) {
@@ -165,7 +176,7 @@ window.addEventListener( 'load', function() {
             completionFormatter : function( datum, element ) {
                 element.innerText += ' FORMATTED';
             }
-        }, { 
+        }, {
             id : 'demo15',
             data : [
                 { text: 'Red' },
@@ -175,33 +186,44 @@ window.addEventListener( 'load', function() {
                 { text: 'Orange' },
                 { text: 'Navy' }
             ]
-        }  
+        }, {
+            id : 'demo16',
+            completionsForText : completionsForTextWithSuggestions( freeTextSuggestions ),
+            selector : '[contenteditable]',
+            inlineTokenFormatter : function( datum ) {
+                return '<span contenteditable="false" class="token">' + datum.text + '</span>';
+            }
+        }
     ].forEach( function( options ) {
-        
+
         var id = options.id,
             container = document.getElementById( id ),
-            inputElement = container.getElementsByTagName( 'input' )[ 0 ];
-            
+            inputElement = container.querySelector( options.selector || 'input' );
+
         delete options.id;
-        
+        delete options.selector;
+
         var tokenInput = new TokenInput( inputElement, options );
-        
+
+        window.tokenInputs = window.tokenInputs || [];
+        window.tokenInputs.push( tokenInput );
+
         inputElement.addEventListener( 'change', function() {
             window.setTimeout( function() {
                 console.log( id + ' = ' + JSON.stringify( tokenInput.getTokens() ) );
             }, 0 );
         } );
-        
+
         inputElement.addEventListener( 'add', function( e ) {
             window.setTimeout( function() {
                 console.log( id + ' added ' + JSON.stringify( e.detail ) );
             }, 0 );
         } );
-        
+
         inputElement.addEventListener( 'tokenClicked', function( e ) {
             console.log( 'clicked', e.detail );
         } );
-        
+
     } );
-    
+
 } );

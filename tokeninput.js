@@ -13,6 +13,9 @@
             xHTML : '&times;',
             tokenClassNames : function( /* datum */ ) { return []; },
             tokenFormatter : function( /* datum, element */ ) {},
+            inlineTokenFormatter : function( datum ) {
+                return '<span contenteditable="false">' + datum.text + '</span>';
+            },
             containerClickTriggersFocus : true,
 
             freeTextEnabled : false,
@@ -22,6 +25,10 @@
                 return { text : '“' + text + '”', value : text, freeText : true }; },
             willShowFreeTextCompletion : function( text, completions ) {
                 return ( text.length && completions.length > 1 );
+            },
+            inlineTokenTrigger : {
+                regExp : /(^|\s*)[@|#](\w*)$/,
+                matchOffset : 2
             },
 
             completionsForText : function( /* text, delayedCompletionsId, delayedCompletionsFn */ ) { return []; },
@@ -69,6 +76,7 @@
         };
         this.willShowHintElement = true;
         this.eventListeners = [];
+        this.inlineTokenMode = false;
 
         this.setupInputElement( inputElement );
         this.setupRepositionListeners();
@@ -141,6 +149,8 @@
 
         this.inputElement = element;
 
+        this.inlineTokenMode = ( element.contentEditable === 'true' );
+
         this.addEventListener( element, 'input', function() {
 
             this.onInput();
@@ -203,12 +213,14 @@
 
         }
 
-        this.autoGrowInputElement();
+        if ( this.willAutoGrowInputElement() ) {
+            this.autoGrowInputElement();
+        }
 
         this.addEventListener( element, 'blur', function() {
 
             setTimeout( function() {
-                this.inputElement.value = '';
+                this.clearNonInlineInputElementValue();
                 this.removeFloatingElement();
             }.bind( this ), 100 );
 
@@ -218,8 +230,25 @@
 
     T.prototype.onInput = function() {
 
-        this.suggestCompletions();
-        this.autoGrowInputElement();
+        if ( this.inlineTokenMode ) {
+            var match = this.getInputElementValue().match( this.options.inlineTokenTrigger.regExp );
+            if ( match && match[ this.options.inlineTokenTrigger.matchOffset ] ) {
+                this.suggestCompletions( {
+                    text : match[ this.options.inlineTokenTrigger.matchOffset ]
+                } );
+                if ( this.willAutoGrowInputElement() ) {
+                    this.autoGrowInputElement();
+                }
+            }
+            else {
+                this.removeFloatingElement();
+            }
+        } else {
+            this.suggestCompletions();
+            if ( this.willAutoGrowInputElement() ) {
+                this.autoGrowInputElement();
+            }
+        }
 
     };
 
@@ -286,8 +315,8 @@
             this.deselectToken();
             delete this.selectedTokenIndex;
         }
-        else if ( this.inputElement.value.length ) {
-            this.inputElement.value = '';
+        else if ( this.getInputElementValue().length ) {
+            this.clearNonInlineInputElementValue();
         }
         else if ( this.floatingElement ) {
             this.removeFloatingElement();
@@ -301,7 +330,7 @@
             e.preventDefault();
             this.addTokenFromSelectedCompletion();
         }
-        else if ( this.options.freeTextEnabled !== false && this.inputElement.value.length ) {
+        else if ( !this.inlineTokenMode && this.options.freeTextEnabled !== false && this.getInputElementValue().length ) {
             e.preventDefault();
             this.addTokenFromInputElement();
         }
@@ -314,7 +343,7 @@
             this.tokens.length &&
             this.inputElement.selectionStart === 0 &&
             this.inputElement.selectionEnd === 0 &&
-            this.inputElement.value.length === 0
+            this.getInputElementValue().length === 0
         ) {
             e.preventDefault();
             if ( this.selectedTokenIndex !== undefined ) {
@@ -335,7 +364,7 @@
 
         if (
             this.selectedTokenIndex !== undefined &&
-            this.inputElement.value.length === 0
+            this.getInputElementValue().length === 0
         ) {
             e.preventDefault();
             if ( this.selectedTokenIndex < this.tokens.length - 1 ) {
@@ -355,7 +384,7 @@
 
         if (
             this.selectedTokenIndex !== undefined &&
-            this.inputElement.value.length === 0
+            this.getInputElementValue().length === 0
         ) {
             e.preventDefault();
 
@@ -386,6 +415,34 @@
             this.selectToken();
 
         }
+        else if ( this.inlineTokenMode ) {
+
+            var selection = getSelection(),
+                range = selection.getRangeAt( 0 ),
+                container = range.startContainer,
+                potentialChild;
+
+            if ( container == this.inputElement ) {
+                potentialChild = container.lastChild;
+            }
+            else if ( container.previousSibling ) {
+                container = container.parentNode;
+                potentialChild = container.previousSibling;
+            }
+
+            if ( this.tokenElements.indexOf( potentialChild ) !== -1 ) {
+
+                e.preventDefault();
+
+                container.removeChild( potentialChild );
+
+                this.selectedTokenIndex = this.tokenElements.indexOf( potentialChild );
+                this.removeSelectedToken();
+                delete this.selectedTokenIndex;
+
+            }
+
+        }
 
     };
 
@@ -395,7 +452,7 @@
             return;
         }
 
-        if ( this.inputElement.value.length ) {
+        if ( this.getInputElementValue().length ) {
             return;
         }
 
@@ -468,7 +525,7 @@
 
         this.nextDelayedCompletionsId = this.nextDelayedCompletionsId || 0;
 
-        var text = this.inputElement.value,
+        var text = options.text || this.getInputElementValue(),
             completions = options.completions ? options.completions.slice( 0 ) :
                 this.options.completionsForText( text, ++this.nextDelayedCompletionsId,
                     function( delayedCompletionsId, delayedCompletions ) {
@@ -476,10 +533,14 @@
                         if ( delayedCompletionsId != this.nextDelayedCompletionsId ) {
                             return;
                         }
-                        this.suggestCompletions( {
-                            completions : delayedCompletions,
-                            preserveSelection : true
-                        } );
+
+                        this.suggestCompletions(
+                            {
+                                completions : delayedCompletions,
+                                preserveSelection : true,
+                                text : text
+                            }
+                        );
 
                     }.bind( this ) ).slice( 0 );
 
@@ -675,8 +736,8 @@
 
         while ( element ) {
             if ( /^(absolute|relative)$/.test(
-                document.defaultView.getComputedStyle( element, null ).getPropertyValue( 'position' )
-            ) ) {
+                    document.defaultView.getComputedStyle( element, null ).getPropertyValue( 'position' )
+                ) ) {
                 break;
             }
             inputLeft += element.offsetLeft;
@@ -687,6 +748,7 @@
         this.floatingElement.style.left = inputLeft + 'px';
         this.floatingElement.style.right = 'auto';
         this.floatingElement.style.top = inputTop + this.inputElement.offsetHeight + 'px';
+        this.floatingElement.style.bottom = 'auto';
 
         this.completionsAboveInput = false;
 
@@ -784,21 +846,21 @@
 
         this.addToken( suggestion );
 
-        this.afterUsersAddsToken();
+        this.didAddToken();
 
     };
 
     T.prototype.addTokenFromInputElement = function() {
 
-        this.addToken( this.options.freeTextToken( this.inputElement.value ) );
+        this.addToken( this.options.freeTextToken( this.getInputElementValue() ) );
 
-        this.afterUsersAddsToken();
+        this.didAddToken();
 
     };
 
-    T.prototype.afterUsersAddsToken = function() {
+    T.prototype.didAddToken = function() {
 
-        this.inputElement.value = '';
+        this.clearNonInlineInputElementValue();
 
         if ( this.completions.length ) {
             this.removeCompletions();
@@ -821,32 +883,60 @@
             }
         }
 
-        var element = document.createElement( 'div' );
-        element.style.display = 'inline-block';
-        element.className =
-            [ 'token' ].concat( this.options.tokenClassNames( datum ) ).join( ' ' );
+        var element;
+        if ( this.inlineTokenMode ) {
 
-        element.textContent = datum.text;
-        if ( this.options.tokenFormatter ) {
-            this.options.tokenFormatter( datum, element );
+            element = document.createElement( 'div' );
+            element.innerHTML = this.options.inlineTokenFormatter( datum );
+            element = element.firstChild;
+
+        }
+        else {
+
+            element = document.createElement( 'div' );
+            element.style.display = 'inline-block';
+            element.className =
+                [ 'token' ].concat( this.options.tokenClassNames( datum ) ).join( ' ' );
+
+            element.textContent = datum.text;
+            if ( this.options.tokenFormatter ) {
+                this.options.tokenFormatter( datum, element );
+            }
+
         }
         this.addEventListener( element, 'click', this.onTokenClick.bind( this ) );
 
-        if ( !this.options.readOnly ) {
-            var removeElement = this._createRemoveElement();
-            this.addEventListener( removeElement, 'click', this.onRemoveTokenClick.bind( this ) );
-            element.appendChild( removeElement );
-        }
+        if ( this.inlineTokenMode ) {
 
-        if ( options.index !== undefined ) {
-            var before = this.tokenElements[ options.index ];
-            if ( !before ) {
-                before = this.inputElement;
-            }
-            this.inputElement.parentNode.insertBefore( element, before );
+            var selection = getSelection();
+
+            var selectionNode = selection.anchorNode;
+            selectionNode.textContent = selectionNode.textContent.replace( this.options.inlineTokenTrigger.regExp, '' );
+            selectionNode.parentNode.insertBefore( element, selectionNode.nextSibling );
+
+            var range = document.createRange();
+            range.setStartAfter( element );
+            selection.removeAllRanges();
+            selection.addRange( range );
+
         }
         else {
-            this.inputElement.parentNode.insertBefore( element, this.inputElement );
+            if ( !this.options.readOnly ) {
+                var removeElement = this._createRemoveElement();
+                this.addEventListener( removeElement, 'click', this.onRemoveTokenClick.bind( this ) );
+                element.appendChild( removeElement );
+            }
+
+            if ( options.index !== undefined ) {
+                var before = this.tokenElements[ options.index ];
+                if ( !before ) {
+                    before = this.inputElement;
+                }
+                this.inputElement.parentNode.insertBefore( element, before );
+            }
+            else {
+                this.inputElement.parentNode.insertBefore( element, this.inputElement );
+            }
         }
 
         this.tokenElements.push( element );
@@ -891,7 +981,7 @@
             this.selectedTokenIndex = index;
             this.selectToken();
 
-            this.inputElement.value = '';
+            this.clearNonInlineInputElementValue();
             this.inputElement.focus();
 
             var token = this.tokens[ this.selectedTokenIndex ];
@@ -944,7 +1034,9 @@
         var selectedTokenIndex = this.selectedTokenIndex,
             tokenElement = this.tokenElements.splice( selectedTokenIndex, 1 )[ 0 ];
 
-        tokenElement.parentNode.removeChild( tokenElement );
+        if ( tokenElement.parentNode ) {
+            tokenElement.parentNode.removeChild( tokenElement );
+        }
 
         var removedToken = this.tokens.splice( selectedTokenIndex, 1 )[ 0 ];
 
@@ -1137,6 +1229,12 @@
 
     };
 
+    T.prototype.willAutoGrowInputElement = function() {
+
+        return !this.inlineTokenMode;
+
+    };
+
     T.prototype.autoGrowInputElement = function() {
 
         var el = this.inputElement,
@@ -1161,6 +1259,28 @@
                 listener[ 0 ].removeEventListener( listener[ 1 ], listener[ 2 ] );
             } );
         delete this.eventListeners;
+
+    };
+
+    T.prototype.getInputElementValue = function() {
+
+        var propertyName = this.inlineTokenMode ? "innerHTML" : "value";
+        return this.inputElement[ propertyName ];
+
+    };
+
+    T.prototype.setInputElementValue = function( value ) {
+
+        var propertyName = this.inlineTokenMode ? "innerHTML" : "value";
+        this.inputElement[ propertyName ] = value;
+
+    };
+
+    T.prototype.clearNonInlineInputElementValue = function( value ) {
+
+        if ( !this.inlineTokenMode ) {
+            this.setInputElementValue( '' );
+        }
 
     };
 

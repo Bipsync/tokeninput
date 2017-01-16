@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/> 
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
     <meta charset="UTF-8">
-    
+
     <style>
         body {
             font-family: sans-serif;
             padding: 20px 20px 1000px 20px;
         }
-        
+
         .tokenInput {
             width: 500px;
             border: 10px solid lightgray;
@@ -19,26 +19,27 @@
             cursor: text;
             border-radius: 20px;
         }
-        
+
         .tokenInput input {
             padding: 8px 4px;
             border: 0;
             font-size: 10pt;
         }
-        .tokenInput input:focus {
+        .tokenInput input:focus,
+        .tokenInput div:focus {
             outline: none;
         }
         .tokenInput input::-ms-clear {
             display: none;
         }
-        
+
         .tokenInput .selected,
         .tokenInput .floating .completion.selected,
         .tokenInput .token.selected {
             background: Highlight;
             color: HighlightText;
         }
-        
+
         .tokenInput .token {
             margin: 0 4px 2px 0;
             border: 1px solid lightgray;
@@ -52,7 +53,7 @@
             vertical-align: super;
             font-size: 9pt;
         }
-        
+
         .tokenInput .floating {
             border: 1px solid lightgray;
             background: #fff;
@@ -80,7 +81,7 @@
             background: #eee;
             padding: 2px 4px;
         }
-        
+
         .tokenInput .red {
             background: #fee;
         }
@@ -90,52 +91,52 @@
         .tokenInput .blue {
             background: #eef;
         }
-        
+
         .tokenInput .hints {
             padding: 10px;
             line-height: 2em;
         }
-        
+
     </style>
-    
+
     <script src="tokeninput.js"></script>
     <script src="demo.js"></script>
-    
+
 </head>
 <body>
 
     <div class="tokenInput" id="demo1">
         <input placeholder="Type something…" />
     </div>
-    
+
     <div class="tokenInput" id="demo2">
         <input placeholder="All defaults…" />
     </div>
-    
+
     <div class="tokenInput" id="demo3">
         <input placeholder="No free-text…" />
     </div>
-    
+
     <div class="tokenInput" id="demo4">
         <input placeholder="Type some more…" />
     </div>
-    
+
     <div class="tokenInput" id="demo5">
         <input placeholder="Type some more…" />
     </div>
-    
+
     <div class="tokenInput" id="demo6">
         <input placeholder="Free text completion option…" />
     </div>
-    
+
     <div class="tokenInput" id="demo7">
         <input placeholder="Grouped completions…" />
     </div>
-    
+
     <div class="tokenInput" id="demo8">
         <input placeholder="Grouped completions w/ new…" />
     </div>
-    
+
     <div class="tokenInput" id="demo10">
         <input placeholder="Hints on focus…" />
         <div id="demo10hints" class="hints" style="display: none">
@@ -143,7 +144,7 @@
             <div>Such as fruits, vehicles and colours!</div>
         </div>
     </div>
-    
+
     <div class="tokenInput" id="demo11">
         <input placeholder="Hints on focus & add…" />
         <div id="demo11hints" class="hints" style="display: none">
@@ -152,22 +153,26 @@
             <div>This should stay open while adding</div>
         </div>
     </div>
-    
+
     <div class="tokenInput" id="demo12">
         <input placeholder="Delayed completions…" />
-    </div>    
-    
+    </div>
+
     <div class="tokenInput" id="demo13">
         <input placeholder="Best match…" />
-    </div>    
-    
+    </div>
+
     <div class="tokenInput" id="demo14">
         <input placeholder="Formatters…" />
-    </div>    
-    
+    </div>
+
     <div class="tokenInput" id="demo15">
         <input placeholder="Auto grow input…" />
-    </div>    
-    
+    </div>
+
+    <div class="tokenInput" id="demo16">
+        <div contenteditable="true" style="display: inline-block"></div>
+    </div>
+
 </body>
 </html>
