@@ -7,8 +7,6 @@
             debug : false,
 
             readOnly : false,
-            undo : true,
-            undoLimit : 10,
             tabToAdd : true,
             xHTML : '&times;',
             tokenClassNames : function( /* datum */ ) { return []; },
@@ -62,7 +60,6 @@
         this.groupElements = {};
         this.tokens = [];
         this.tokenElements = [];
-        this.undoStack = [];
         this.keys = {
             Up : 38,
             Down : 40,
@@ -71,7 +68,6 @@
             Left : 37,
             Right : 39,
             Backspace : 8,
-            Z : 90,
             Tab : 9
         };
         this.willShowHintElement = true;
@@ -442,33 +438,6 @@
 
             }
 
-        }
-
-    };
-
-    T.prototype.onZ = function( e ) {
-
-        if ( !( e.metaKey || e.ctrlKey ) ) {
-            return;
-        }
-
-        if ( this.getInputElementValue().length ) {
-            return;
-        }
-
-        e.preventDefault();
-
-        if ( !e.shiftKey ) {
-            this.undo();
-        }
-
-    };
-
-    T.prototype.undo = function() {
-
-        var undoFunction = this.undoStack.pop();
-        if ( undoFunction ) {
-            undoFunction();
         }
 
     };
@@ -948,21 +917,6 @@
             this.dispatchEvent( 'add', datum );
         }
 
-        if ( !options.isUndoing && options.canUndo !== false ) {
-            var tokenIndex = this.tokens.length - 1;
-            this.toUndo( function() {
-
-                if ( tokenIndex < this.tokens.length ) {
-                    this.selectedTokenIndex = tokenIndex;
-                    this.removeSelectedToken( {
-                        isUndoing : true
-                    } );
-                }
-                delete this.selectedTokenIndex;
-
-            }.bind( this ) );
-        }
-
     };
 
     T.prototype.onTokenClick = function( e ) {
@@ -1043,15 +997,6 @@
         this.dispatchEvent( 'change' );
         this.dispatchEvent( 'remove', removedToken );
 
-        if ( !options.isUndoing ) {
-            this.toUndo( function() {
-                this.addToken( removedToken, {
-                    index : selectedTokenIndex,
-                    isUndoing : true
-                } );
-            }.bind( this ) );
-        }
-
     };
 
     T.prototype.removeToken = function( datum, options ) {
@@ -1072,15 +1017,6 @@
         if ( !options.silent ) {
             this.dispatchEvent( 'change' );
             this.dispatchEvent( 'remove', removedToken );
-        }
-
-        if ( !options.isUndoing && options.canUndo !== false ) {
-            this.toUndo( function() {
-                this.addToken( removedToken, {
-                    index : tokenIndex,
-                    isUndoing : true
-                } );
-            }.bind( this ) );
         }
 
     };
@@ -1112,18 +1048,6 @@
         }
 
         this.inputElement.dispatchEvent( event );
-
-    };
-
-    T.prototype.toUndo = function( undoFunction ) {
-
-        if ( !this.options.undo ) {
-            return;
-        }
-        this.undoStack.push( undoFunction );
-        if ( this.options.undoLimit > 0 ) {
-            this.undoStack = this.undoStack.slice( -this.options.undoLimit );
-        }
 
     };
 
@@ -1187,16 +1111,14 @@
 
         while ( ( existingToken = existingTokens.pop() ) ) {
             this.removeToken( existingToken, {
-                silent : true,
-                canUndo : false
+                silent : true
             } );
         }
 
         if ( newTokens ) {
             newTokens.forEach( function( datum ) {
                 this.addToken( datum, {
-                    silent : true,
-                    canUndo : false
+                    silent : true
                 } );
             }, this );
         }
