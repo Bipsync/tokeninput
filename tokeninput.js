@@ -880,19 +880,19 @@
             var selection = getSelection(),
                 range = selection.getRangeAt( 0 );
 
-            var selectionNode = selection.anchorNode;
-            selectionNode.textContent = selectionNode.textContent.replace(
-                this.options.inlineTokenTrigger.regExp, '' );
-
             var emptyNode = document.createElement( 'span' );
             range.insertNode( emptyNode );
 
             range.insertNode( element );
 
+            var selectionNode = selection.anchorNode;
+            selectionNode.textContent = selectionNode.textContent.replace(
+                this.options.inlineTokenTrigger.regExp, '' );
+
             selection.removeAllRanges();
 
             range = document.createRange();
-            range.setStartAfter( emptyNode );
+            range.selectNode( emptyNode );
             selection.addRange( range );
 
         }
