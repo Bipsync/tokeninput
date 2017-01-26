@@ -335,6 +335,10 @@
 
     T.prototype.onLeft = function( e ) {
 
+        if ( this.floatingElement && this.inlineTokenMode ) {
+            e.preventDefault();
+        }
+
         if (
             this.tokens.length &&
             this.inputElement.selectionStart === 0 &&
@@ -357,6 +361,10 @@
     };
 
     T.prototype.onRight = function( e ) {
+
+        if ( this.floatingElement && this.inlineTokenMode ) {
+            e.preventDefault();
+        }
 
         if (
             this.selectedTokenIndex !== undefined &&
