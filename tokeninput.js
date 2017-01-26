@@ -880,7 +880,7 @@
             var selection = getSelection(),
                 range = selection.getRangeAt( 0 );
 
-            var emptyNode = document.createElement( 'span' );
+            var emptyNode = document.createTextNode( '\u00A0' );
             range.insertNode( emptyNode );
 
             range.insertNode( element );
@@ -893,6 +893,7 @@
 
             range = document.createRange();
             range.selectNode( emptyNode );
+            range.collapse( true );
             selection.addRange( range );
 
         }
