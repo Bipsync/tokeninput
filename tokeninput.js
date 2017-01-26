@@ -877,15 +877,22 @@
 
         if ( this.inlineTokenMode ) {
 
-            var selection = getSelection();
+            var selection = getSelection(),
+                range = selection.getRangeAt( 0 );
 
             var selectionNode = selection.anchorNode;
-            selectionNode.textContent = selectionNode.textContent.replace( this.options.inlineTokenTrigger.regExp, '' );
-            selectionNode.parentNode.insertBefore( element, selectionNode.nextSibling );
+            selectionNode.textContent = selectionNode.textContent.replace(
+                this.options.inlineTokenTrigger.regExp, '' );
 
-            var range = document.createRange();
-            range.setStartAfter( element );
+            var emptyNode = document.createElement( 'span' );
+            range.insertNode( emptyNode );
+
+            range.insertNode( element );
+
             selection.removeAllRanges();
+
+            range = document.createRange();
+            range.setStartAfter( emptyNode );
             selection.addRange( range );
 
         }
