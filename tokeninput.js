@@ -299,6 +299,7 @@
         if ( this.completions.length ) {
             if ( this.selectedCompletionIndex === undefined ) {
                 if ( !this.completionsAboveInput ) {
+                    e.preventDefault();
                     this.selectedCompletionIndex = 0;
                     this.selectCompletion();
                 }
