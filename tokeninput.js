@@ -25,8 +25,8 @@
                 return ( text.length && completions.length > 1 );
             },
             inlineTokenTrigger : {
-                regExp : /(^|\s*)[@|#](\w*)$/,
-                matchOffset : 2
+                regExp : /[@#]([\w\s]*)$/,
+                matchOffset : 1
             },
 
             completionsForText : function( /* text, delayedCompletionsId, delayedCompletionsFn */ ) { return []; },
@@ -227,10 +227,28 @@
     T.prototype.onInput = function() {
 
         if ( this.inlineTokenMode ) {
-            var match = this.getInputElementValue().match( this.options.inlineTokenTrigger.regExp );
+
+            var selection = window.getSelection(),
+                focusNode = selection.focusNode;
+
+            if ( !selection.isCollapsed ) {
+                return;
+            }
+            if ( focusNode == this.getInputElementValue() ) {
+                return;
+            }
+            if ( focusNode.nodeType != Node.TEXT_NODE ) {
+                return;
+            }
+            var textContent = focusNode.textContent;
+            textContent = textContent.substr( 0, selection.focusOffset );
+
+            var match = textContent.match( this.options.inlineTokenTrigger.regExp );
             if ( match && match[ this.options.inlineTokenTrigger.matchOffset ] ) {
+                var text = match[ this.options.inlineTokenTrigger.matchOffset ];
+                text = text.trim();
                 this.suggestCompletions( {
-                    text : match[ this.options.inlineTokenTrigger.matchOffset ]
+                    text : text
                 } );
                 if ( this.willAutoGrowInputElement() ) {
                     this.autoGrowInputElement();
@@ -239,6 +257,7 @@
             else {
                 this.removeFloatingElement();
             }
+
         } else {
             this.suggestCompletions();
             if ( this.willAutoGrowInputElement() ) {
@@ -335,6 +354,10 @@
 
     T.prototype.onLeft = function( e ) {
 
+        if ( this.completions.length ) {
+            this.removeCompletions();
+        }
+
         if (
             this.tokens.length &&
             this.inputElement.selectionStart === 0 &&
@@ -358,6 +381,10 @@
 
     T.prototype.onRight = function( e ) {
 
+        if ( this.completions.length ) {
+            this.removeCompletions();
+        }
+        
         if (
             this.selectedTokenIndex !== undefined &&
             this.getInputElementValue().length === 0
