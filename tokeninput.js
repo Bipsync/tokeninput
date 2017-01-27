@@ -51,7 +51,9 @@
             hintElement : null,
             hintAfterAdd : false,
 
-            placeholderLength : null
+            placeholderLength : null,
+
+            debouncePeriod : 0
 
         }, options || {} );
 
@@ -141,17 +143,32 @@
 
     };
 
+    T.prototype.debounce = function(func, wait, immediate) {
+        var timeout;
+        return function() {
+            var context = this, args = arguments;
+            var later = function() {
+                timeout = null;
+                if (!immediate) func.apply(context, args);
+            };
+            var callNow = immediate && !timeout;
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+            if (callNow) func.apply(context, args);
+        };
+    };
+
     T.prototype.setupInputElement = function( element ) {
 
         this.inputElement = element;
 
         this.inlineTokenMode = ( element.contentEditable === 'true' );
 
-        this.addEventListener( element, 'input', function() {
+        this.addEventListener( element, 'input', this.debounce( function() {
 
             this.onInput();
 
-        }.bind( this ) );
+        }, this.options.debouncePeriod ).bind( this ) );
 
         this.addEventListener( element, 'keydown', function( e ) {
 
