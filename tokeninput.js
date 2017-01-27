@@ -25,7 +25,7 @@
                 return ( text.length && completions.length > 1 );
             },
             inlineTokenTrigger : {
-                regExp : /[@#]([\w\s]*)$/,
+                regExp : /[@#]([^@#]+)$/,
                 matchOffset : 1
             },
 

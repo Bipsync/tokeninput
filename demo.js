@@ -26,12 +26,14 @@ window.addEventListener( 'load', function() {
         freeTextSuggestions = [
             { text: 'Aardvark', value : 1, type : 'red', classes : 'token', link: 'http://www.aardvark.com' },
             { text: 'Apple', value : 2, type : 'blue', classes : 'token', link: 'http://www.apple.com' },
+            { text: 'Apple & Banana', value : 2, type : 'blue', classes : 'token', link: 'http://www.apple.com' },
             { text: 'Banana', value : 3, type : 'green', link: 'http://www.banana.com' },
             { text: 'Cage', value : 4, type : 'red', link: 'http://www.banana.com' },
             { text: 'Cab', value : 5, type : 'blue', link: 'http://www.cab.com' },
             { text: 'Car', value : 6, type : 'green', link: 'http://www.car.com' },
             { text: 'Caravan', value : 7, type : 'red', link: 'http://www.caravan.com' },
-            { text: 'Caviar', value : 8, type : 'blue', link: 'http://www.caviar.com' }
+            { text: 'Caviar', value : 8, type : 'blue', link: 'http://www.caviar.com' },
+            { text: 'Multiple Words', value : 2, type : 'blue', classes : 'token', link: 'http://www.apple.com' }
         ],
 
         completionsForTextWithSuggestions = function( suggestions ) {
