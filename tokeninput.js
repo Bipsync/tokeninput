@@ -1046,7 +1046,9 @@
 
         var tokenElement = this.tokenElements.splice( tokenIndex, 1 )[ 0 ];
 
-        tokenElement.parentNode.removeChild( tokenElement );
+        if ( tokenElement.parentNode ) {
+            tokenElement.parentNode.removeChild( tokenElement );
+        }
 
         var removedToken = this.tokens.splice( tokenIndex, 1 )[ 0 ];
 
