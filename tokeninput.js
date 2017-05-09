@@ -626,6 +626,7 @@
 
         this.completions = completions;
         if ( !completions.length ) {
+            this.dispatchEvent( 'noCompletions' );
             return;
         }
 
