@@ -15,7 +15,7 @@
                 return '<span contenteditable="false">' + datum.text + '</span>';
             },
             containerClickTriggersFocus : true,
-
+            selectCompletionsOnUpDown : true,
             freeTextEnabled : false,
             freeTextToken : function( text ) {
                 return { text : '“' + text + '”', value : text, freeText : true }; },
@@ -287,7 +287,7 @@
                 this.selectCompletion();
             }
         }
-        else if ( this.completionsAboveInput ) {
+        else if ( this.selectCompletionsOnUpDown && this.completionsAboveInput ) {
             e.preventDefault();
             this.suggestCompletions();
         }
@@ -311,7 +311,7 @@
                 this.selectCompletion();
             }
         }
-        else {
+        else if ( this.selectCompletionsOnUpDown ) {
             e.preventDefault();
             this.suggestCompletions();
         }
@@ -385,7 +385,7 @@
         if ( this.completions.length ) {
             this.removeCompletions();
         }
-        
+
         if (
             this.selectedTokenIndex !== undefined &&
             this.getInputElementValue().length === 0
@@ -1259,6 +1259,7 @@
             'getTokens',
             'setCompletionGroups',
             'removeFloatingElement',
+            'removeCompletions',
             'removeToken',
             'setTokens',
             'destroy'
