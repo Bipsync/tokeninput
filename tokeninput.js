@@ -665,6 +665,11 @@
 
         var containerElement = this.completionsListElement,
             datumGroup = datum.displayGroup || datum.group;
+
+        if ( datum.freeText ) {
+            datumGroup = 'freeText';
+        }
+
         if ( !datumGroup ) {
             return containerElement;
         }
