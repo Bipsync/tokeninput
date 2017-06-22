@@ -1255,6 +1255,7 @@
             exposed = new TokenInput();
 
         [
+            'addEventListener',
             'getTokens',
             'setCompletionGroups',
             'removeFloatingElement',
