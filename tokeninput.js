@@ -385,7 +385,7 @@
         if ( this.completions.length ) {
             this.removeCompletions();
         }
-        
+
         if (
             this.selectedTokenIndex !== undefined &&
             this.getInputElementValue().length === 0
@@ -958,7 +958,15 @@
     T.prototype.onTokenClick = function( e ) {
 
         var tokenElements = this.tokenElements,
-            index = tokenElements.indexOf( e.target );
+            index = tokenElements.indexOf( e.target ),
+            elContainsChild = false;
+
+        tokenElements.forEach( function( el ) {
+            if ( el.contains( e.target ) ) {
+                index = tokenElements.indexOf( el );
+            }
+        }, this );
+
         if ( index != -1 ) {
 
             if ( this.completions.length ) {
