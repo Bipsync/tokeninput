@@ -22,38 +22,20 @@ There are lots of options, see [tokeninput.js](tokeninput.js)
 
 ### API
 
-`addEventListener(element, type, listener)`
-
-Adds an event listener to the given element.
-
-`getTokens()`
-
-Returns an array of objects representing each token added to the component.
-
-`setCompletionGroups(completionGroups)`
-
-Configures the completion groups that visually separate suggestions.
-
-`removeFloatingElement()`
-
-Hides the suggestion UI.
-
-`removeToken(datum, options)`
-
-Removes the given token from the component UI and the component's internal list of tokens.
-
-`setTokens(newTokens)`
-
-Removes all existing tokens from the UI and replaces them with the tokens in the given array.
-
-`destroy()`
-Cleans up by removing all registered event listeners.
-
+Method | Description
+-------|------------
+`addEventListener(element, type, listener)` | Adds an event listener to the given element.
+`getTokens()` | Returns an array of objects representing each token added to the component.
+`setTokens(newTokens)` | Removes all existing tokens from the UI and replaces them with the tokens in the given array.
+`setCompletionGroups(completionGroups)` | Configures the completion groups that visually separate suggestions.
+`removeFloatingElement()` | Hides the suggestion UI.
+`removeToken(datum, options)` | Removes the given token from the component UI and the component's internal list of tokens.
+`destroy()` | Cleans up by removing all registered event listeners.
 
 ### Options
 
 Name | Description | Default
------|------------|--------
+-----|------------|---------
 readOnly | Prevents tokens from being added / removed | `false`
 tabToAdd | Pressing the tab key submits the current token and allows a new one to be entered | `true`
 xHTML | A string which represents the delete button in a token | `&times;`
