@@ -1224,9 +1224,11 @@
 
         this.eventListeners
             .forEach( function( listener ) {
-                listener[ 0 ].removeEventListener( listener[ 1 ], listener[ 2 ] );
+                if ( listener && listener[ 0 ] ) {
+                    listener[ 0 ].removeEventListener( listener[ 1 ], listener[ 2 ] );
+                }
             } );
-        delete this.eventListeners;
+        this.eventListeners = [];
 
     };
 
