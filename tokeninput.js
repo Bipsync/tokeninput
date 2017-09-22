@@ -473,8 +473,10 @@
     T.prototype.removeFloatingElement = function() {
 
         if ( this.floatingElement ) {
+            this.dispatchEvent( 'willHideFloatingElement' );
             this.floatingElement.parentNode.removeChild( this.floatingElement );
             delete this.floatingElement;
+            this.dispatchEvent( 'didHideFloatingElement' );
         }
 
     };
@@ -719,8 +721,11 @@
             return;
         }
 
+        this.dispatchEvent( 'willShowFloatingElement' );
+
         if ( this.options.positionFloatingElement ) {
             this.options.positionFloatingElement( this.floatingElement );
+            this.dispatchEvent( 'didShowFloatingElement' );
             return;
         }
 
@@ -773,6 +778,8 @@
             this.floatingElement.style.right = '0';
 
         }
+
+        this.dispatchEvent( 'didShowFloatingElement' );
 
     };
 
