@@ -1278,6 +1278,8 @@
             'removeFloatingElement',
             'removeToken',
             'setTokens',
+            'onUp',
+            'onDown',
             'destroy'
 
         ].forEach( function( method ) {
