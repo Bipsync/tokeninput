@@ -441,7 +441,7 @@
         }
         else if ( this.inlineTokenMode ) {
 
-            var selection = getSelection(),
+            var selection = window.getSelection(),
                 range = selection.getRangeAt( 0 ),
                 container = range.startContainer,
                 potentialChild;
@@ -912,7 +912,7 @@
 
         if ( this.inlineTokenMode ) {
 
-            var selection = getSelection(),
+            var selection = window.getSelection(),
                 range = selection.getRangeAt( 0 );
 
             var emptyNode = document.createTextNode( '\u00A0' );
@@ -965,8 +965,7 @@
     T.prototype.onTokenClick = function( e ) {
 
         var tokenElements = this.tokenElements,
-            index = tokenElements.indexOf( e.target ),
-            elContainsChild = false;
+            index = tokenElements.indexOf( e.target );
 
         tokenElements.forEach( function( el ) {
             if ( el.contains( e.target ) ) {
@@ -1253,7 +1252,7 @@
 
     };
 
-    T.prototype.clearNonInlineInputElementValue = function( value ) {
+    T.prototype.clearNonInlineInputElementValue = function() {
 
         if ( !this.inlineTokenMode ) {
             this.setInputElementValue( '' );
