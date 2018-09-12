@@ -1046,7 +1046,9 @@
 
         this.dispatchEvent( 'change' );
         this.dispatchEvent( 'remove', removedToken );
-
+        if ( this.willAutoGrowInputElement() ) {
+            this.autoGrowInputElement();
+        }
     };
 
     T.prototype.removeToken = function( datum, options ) {
@@ -1065,10 +1067,13 @@
         }
 
         var removedToken = this.tokens.splice( tokenIndex, 1 )[ 0 ];
-
+        
         if ( !options.silent ) {
             this.dispatchEvent( 'change' );
             this.dispatchEvent( 'remove', removedToken );
+        }
+        if ( this.willAutoGrowInputElement() ) {
+             this.autoGrowInputElement();
         }
 
     };
@@ -1210,7 +1215,8 @@
     };
 
     T.prototype.autoGrowInputElement = function() {
-
+        console.log('auto-growing');
+        debugger;
         var el = this.inputElement,
             placeholderLength = this.options.placeholderLength || el.placeholder.length,
             targetSize;
@@ -1273,6 +1279,7 @@
         [
             'addEventListener',
             'getTokens',
+            'autoGrowInputElement',
             'setCompletionGroups',
             'removeFloatingElement',
             'removeToken',
