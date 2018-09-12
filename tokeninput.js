@@ -1215,8 +1215,7 @@
     };
 
     T.prototype.autoGrowInputElement = function() {
-        console.log('auto-growing');
-        debugger;
+
         var el = this.inputElement,
             placeholderLength = this.options.placeholderLength || el.placeholder.length,
             targetSize;
@@ -1279,7 +1278,6 @@
         [
             'addEventListener',
             'getTokens',
-            'autoGrowInputElement',
             'setCompletionGroups',
             'removeFloatingElement',
             'removeToken',
