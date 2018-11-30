@@ -1,0 +1,19 @@
+{
+  "name": "tokeninput",
+  "version": "1.0.0",
+  "description": "Dependency-free Javascript UI component providing a token based input element with grouped completion lists and free-text entry",
+  "main": "tokeninput.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bipsync/tokeninput.git"
+  },
+  "keywords": [
+    "token"
+  ],
+  "author": "bipsync",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bipsync/tokeninput/issues"
+  },
+  "homepage": "https://github.com/Bipsync/tokeninput#readme"
+}
