@@ -627,7 +627,7 @@
         }
 
         this.completions = completions;
-        if ( !completions.length ) {
+        if ( !completions.length && !this.options.footerText ) {
             return;
         }
 
@@ -777,6 +777,13 @@
             this.floatingElement.style.left = 'auto';
             this.floatingElement.style.right = '0';
 
+        }
+
+        if ( this.options.footerText && document.getElementsByClassName( 'tokenInputFooter' ).length === 0 ) {
+            var footerElement = document.createElement( 'div' );
+            footerElement.className = 'tokenInputFooter';
+            footerElement.innerText = this.options.footerText;
+            this.floatingElement.appendChild( footerElement );
         }
 
         this.dispatchEvent( 'didShowFloatingElement' );
@@ -1067,7 +1074,7 @@
         }
 
         var removedToken = this.tokens.splice( tokenIndex, 1 )[ 0 ];
-        
+
         if ( !options.silent ) {
             this.dispatchEvent( 'change' );
             this.dispatchEvent( 'remove', removedToken );
@@ -1280,6 +1287,7 @@
             'getTokens',
             'setCompletionGroups',
             'removeFloatingElement',
+            'positionFloatingElement',
             'removeToken',
             'setTokens',
             'onUp',
