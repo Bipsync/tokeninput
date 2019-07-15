@@ -18,9 +18,9 @@
 
             freeTextEnabled : false,
             freeTextToken : function( text ) {
-                return { text : '“' + text + '”', value : text, freeText : true }; },
+                return { text : '"' + text + '"', value : text, freeText : true }; },
             freeTextCompletion : function( text ) {
-                return { text : '“' + text + '”', value : text, freeText : true }; },
+                return { text : '"' + text + '"', value : text, freeText : true }; },
             willShowFreeTextCompletion : function( text, completions ) {
                 return ( text.length && completions.length > 1 );
             },
@@ -50,6 +50,8 @@
 
             hintElement : null,
             hintAfterAdd : false,
+            disableTokenClick : false,
+            disableFocusOnRemove : false,
 
             placeholderLength : null
 
@@ -213,12 +215,22 @@
             this.autoGrowInputElement();
         }
 
-        this.addEventListener( element, 'blur', function() {
+        this.addEventListener( element, 'blur', function( event ) {
 
-            setTimeout( function() {
-                this.clearNonInlineInputElementValue();
-                this.removeFloatingElement();
-            }.bind( this ), 100 );
+            if ( this.options.disableTokenClick && event.relatedTarget && ( event.relatedTarget.className === 'x' || event.relatedTarget.lastChild.className === 'x' ) ) {
+
+                setTimeout( function() {
+                    this.showHintElement();
+                }.bind( this ), 0 );
+
+            } else {
+
+                setTimeout( function() {
+                    this.clearNonInlineInputElementValue();
+                    this.removeFloatingElement();
+                }.bind( this ), 100 );
+
+            }
 
         }.bind( this ) );
 
@@ -906,6 +918,7 @@
 
             element = document.createElement( 'div' );
             element.style.display = 'inline-block';
+            element.tabIndex = -1;
             element.className =
                 [ 'token' ].concat( this.options.tokenClassNames( datum ) ).join( ' ' );
 
@@ -915,7 +928,10 @@
             }
 
         }
-        this.addEventListener( element, 'click', this.onTokenClick.bind( this ) );
+
+        if ( !this.options.disableTokenClick ) {
+            this.addEventListener( element, 'click', this.onTokenClick.bind( this ) );
+        }
 
         if ( this.inlineTokenMode ) {
 
@@ -1022,11 +1038,14 @@
             this.removeSelectedToken();
             delete this.selectedTokenIndex;
 
-            this.inputElement.focus();
+            if ( !this.options.disableFocusOnRemove ) {
+                this.inputElement.focus();
+            }
 
         }
 
         e.preventDefault();
+        e.stopPropagation();
         return false;
 
     };
