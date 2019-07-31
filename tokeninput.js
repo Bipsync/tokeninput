@@ -217,7 +217,13 @@
 
         this.addEventListener( element, 'blur', function( event ) {
 
-            if ( this.options.disableTokenClick && event.relatedTarget && ( event.relatedTarget.className === 'x' || event.relatedTarget.lastChild.className === 'x' ) ) {
+            if (
+                this.options.disableTokenClick &&
+                (
+                    ( event.relatedTarget && event.relatedTarget.className === 'x' ) ||
+                    ( event.relatedTarget.lastChild && event.relatedTarget.lastChild.className === 'x' )
+                )
+            ) {
 
                 setTimeout( function() {
                     this.showHintElement();
