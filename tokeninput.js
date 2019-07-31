@@ -221,7 +221,7 @@
                 this.options.disableTokenClick &&
                 (
                     ( event.relatedTarget && event.relatedTarget.className === 'x' ) ||
-                    ( event.relatedTarget.lastChild && event.relatedTarget.lastChild.className === 'x' )
+                    ( event.relatedTarget && event.relatedTarget.lastChild && event.relatedTarget.lastChild.className === 'x' )
                 )
             ) {
 
