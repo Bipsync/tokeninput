@@ -18,9 +18,9 @@
 
             freeTextEnabled : false,
             freeTextToken : function( text ) {
-                return { text : '"' + text + '"', value : text, freeText : true }; },
+                return { text : '"' + text + '"', value : text, freeText : true, group : 'freeText' }; },
             freeTextCompletion : function( text ) {
-                return { text : '"' + text + '"', value : text, freeText : true }; },
+                return { text : '"' + text + '"', value : text, freeText : true, group : 'freeText' }; },
             willShowFreeTextCompletion : function( text, completions ) {
                 return ( text.length && completions.length > 1 );
             },
