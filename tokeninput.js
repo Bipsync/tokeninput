@@ -511,6 +511,10 @@
         this.addEventListener( removeElement, 'click', this.onRemoveFloatingElementClick.bind( this ) );
         element.appendChild( removeElement );
 
+        if ( this.searchHistoryElement ) {
+            element.appendChild( this.searchHistoryElement );
+        }
+
         var listElement = this.completionsListElement = document.createElement( 'div' );
         listElement.className = 'list';
         element.appendChild( listElement );
@@ -1297,6 +1301,12 @@
 
     };
 
+    T.prototype.setSearchHistory = function( searchHistoryElement ) {
+
+        this.searchHistoryElement = searchHistoryElement;
+
+    };
+
     //
 
     function TokenInput() {
@@ -1315,6 +1325,7 @@
             'positionFloatingElement',
             'removeToken',
             'setTokens',
+            'setSearchHistory',
             'onUp',
             'onDown',
             'destroy'
