@@ -511,13 +511,13 @@
         this.addEventListener( removeElement, 'click', this.onRemoveFloatingElementClick.bind( this ) );
         element.appendChild( removeElement );
 
-        if ( this.searchHistoryElement ) {
-            element.appendChild( this.searchHistoryElement );
-        }
-
         var listElement = this.completionsListElement = document.createElement( 'div' );
         listElement.className = 'list';
         element.appendChild( listElement );
+
+        if ( this.searchHistoryElement ) {
+            element.appendChild( this.searchHistoryElement );
+        }
 
         var floatingElementParent = ( this.options.floatingElementParent || this.inputElement.parentNode );
         if ( typeof floatingElementParent == 'function' ) {
