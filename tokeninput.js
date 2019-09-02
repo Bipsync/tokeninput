@@ -515,8 +515,8 @@
         listElement.className = 'list';
         element.appendChild( listElement );
 
-        if ( this.searchHistoryElement ) {
-            element.appendChild( this.searchHistoryElement );
+        if ( this.elementAfterCompletions ) {
+            element.appendChild( this.elementAfterCompletions );
         }
 
         var floatingElementParent = ( this.options.floatingElementParent || this.inputElement.parentNode );
@@ -1301,9 +1301,9 @@
 
     };
 
-    T.prototype.setSearchHistory = function( searchHistoryElement ) {
+    T.prototype.setElementAfterCompletions = function( elementAfterCompletions ) {
 
-        this.searchHistoryElement = searchHistoryElement;
+        this.elementAfterCompletions = elementAfterCompletions;
 
     };
 
@@ -1325,7 +1325,7 @@
             'positionFloatingElement',
             'removeToken',
             'setTokens',
-            'setSearchHistory',
+            'setElementAfterCompletions',
             'onUp',
             'onDown',
             'destroy'
