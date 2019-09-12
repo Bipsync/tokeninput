@@ -47,6 +47,7 @@
 
             positionFloatingElement : null, /* function( floatingElement ){} */
             floatingElementParent : null,
+            onRight : null,
 
             hintElement : null,
             hintAfterAdd : false,
@@ -400,26 +401,32 @@
 
     T.prototype.onRight = function( e ) {
 
-        if ( this.completions.length ) {
-            this.removeCompletions();
-        }
+        if ( this.options.onRight ) {
 
-        if (
-            this.selectedTokenIndex !== undefined &&
-            this.getInputElementValue().length === 0
-        ) {
-            e.preventDefault();
-            if ( this.selectedTokenIndex < this.tokens.length - 1 ) {
-                this.deselectToken();
-                this.selectedTokenIndex++;
-                this.selectToken();
+            this.options.onRight();
+
+        } else {
+
+            if ( this.completions.length ) {
+                this.removeCompletions();
             }
-            else {
-                this.deselectToken();
-                delete this.selectedTokenIndex;
+
+            if (
+                this.selectedTokenIndex !== undefined &&
+                this.getInputElementValue().length === 0
+            ) {
+                e.preventDefault();
+                if ( this.selectedTokenIndex < this.tokens.length - 1 ) {
+                    this.deselectToken();
+                    this.selectedTokenIndex++;
+                    this.selectToken();
+                }
+                else {
+                    this.deselectToken();
+                    delete this.selectedTokenIndex;
+                }
             }
         }
-
     };
 
     T.prototype.onBackspace = function( e ) {
@@ -659,7 +666,7 @@
 
             var containerElement = this.containerElementForCompletion( datum );
 
-            var element = document.createElement( 'a' );
+            var element = document.createElement( 'div' );
             element.style.display = 'block';
             element.className =
                 [ 'completion' ].concat( this.options.completionClassNames( datum ) ).join( ' ' );
@@ -1127,6 +1134,15 @@
 
     };
 
+    T.prototype.getSelectedCompletionElement = function() {
+
+        if ( this.selectedCompletionIndex !== undefined ) {
+            return this.completionElements[ this.selectedCompletionIndex ];
+        }
+        return undefined;
+
+    };
+
     T.prototype.dispatchEvent = function( eventName, detail ) {
 
         var event;
@@ -1320,6 +1336,7 @@
         [
             'addEventListener',
             'getTokens',
+            'getSelectedCompletionElement',
             'setCompletionGroups',
             'removeFloatingElement',
             'positionFloatingElement',
