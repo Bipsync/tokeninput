@@ -47,7 +47,8 @@
 
             positionFloatingElement : null, /* function( floatingElement ){} */
             floatingElementParent : null,
-            onRight : null,
+
+            beforeEnter : null,
 
             hintElement : null,
             hintAfterAdd : false,
@@ -163,8 +164,16 @@
                 var which = this.keys[ index ];
                 if ( e.which == which ) {
                     var fn = 'on' + index;
-                    this[ fn ]( e );
-                    handled = true;
+                    var beforeFn = 'before' + index;
+                    if ( this.options[ beforeFn ] ) {
+                        if ( this.options[ beforeFn ]( e ) === false ) {
+                            handled = true;
+                        }
+                    }
+                    if ( !handled ) {
+                        this[ fn ]( e );
+                        handled = true;
+                    }
                     break;
                 }
             }
@@ -401,32 +410,26 @@
 
     T.prototype.onRight = function( e ) {
 
-        if ( this.options.onRight ) {
+        if ( this.completions.length ) {
+            this.removeCompletions();
+        }
 
-            this.options.onRight();
-
-        } else {
-
-            if ( this.completions.length ) {
-                this.removeCompletions();
+        if (
+            this.selectedTokenIndex !== undefined &&
+            this.getInputElementValue().length === 0
+        ) {
+            e.preventDefault();
+            if ( this.selectedTokenIndex < this.tokens.length - 1 ) {
+                this.deselectToken();
+                this.selectedTokenIndex++;
+                this.selectToken();
             }
-
-            if (
-                this.selectedTokenIndex !== undefined &&
-                this.getInputElementValue().length === 0
-            ) {
-                e.preventDefault();
-                if ( this.selectedTokenIndex < this.tokens.length - 1 ) {
-                    this.deselectToken();
-                    this.selectedTokenIndex++;
-                    this.selectToken();
-                }
-                else {
-                    this.deselectToken();
-                    delete this.selectedTokenIndex;
-                }
+            else {
+                this.deselectToken();
+                delete this.selectedTokenIndex;
             }
         }
+
     };
 
     T.prototype.onBackspace = function( e ) {
