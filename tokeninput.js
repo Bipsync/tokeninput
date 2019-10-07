@@ -521,13 +521,18 @@
         this.addEventListener( removeElement, 'click', this.onRemoveFloatingElementClick.bind( this ) );
         element.appendChild( removeElement );
 
+        var containerElement = this.completionsListElement = document.createElement( 'div' );
+        containerElement.className = 'container';
+
         var listElement = this.completionsListElement = document.createElement( 'div' );
         listElement.className = 'list';
-        element.appendChild( listElement );
+        containerElement.appendChild( listElement );
 
         if ( this.elementAfterCompletions ) {
-            element.appendChild( this.elementAfterCompletions );
+            containerElement.appendChild( this.elementAfterCompletions );
         }
+
+        element.appendChild( containerElement );
 
         var floatingElementParent = ( this.options.floatingElementParent || this.inputElement.parentNode );
         if ( typeof floatingElementParent == 'function' ) {
