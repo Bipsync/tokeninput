@@ -51,6 +51,7 @@
             beforeEnter : null,
 
             hintElement : null,
+            scrollingElement : null,
             hintAfterAdd : false,
             disableTokenClick : false,
             disableFocusOnRemove : false,
@@ -319,7 +320,6 @@
             e.preventDefault();
             this.suggestCompletions();
         }
-
     };
 
     T.prototype.onDown = function( e ) {
@@ -542,6 +542,7 @@
 
         this.floatingElement = element;
 
+        this.scrollingContainer = this.options.scrollingElement ? this.floatingElement.getElementsByClassName( this.options.scrollingElement )[0] : this.floatingElement;
     };
 
     T.prototype.onRemoveFloatingElementClick = function( e ) {
@@ -854,22 +855,23 @@
         var elementTop = 0,
             e = element;
         while ( e != this.floatingElement ) {
-            elementTop += e.offsetTop;
-            e = e.offsetParent;
-        }
-
-        var topOffset = elementTop - this.floatingElement.scrollTop;
-        if ( topOffset < 0 ) {
-            this.floatingElement.scrollTop += topOffset;
-        }
-        else {
-            var bottomOffset = ( elementTop + element.offsetHeight ) -
-                ( this.floatingElement.scrollTop + this.floatingElement.offsetHeight );
-            if ( bottomOffset > 0 ) {
-                this.floatingElement.scrollTop += bottomOffset;
+            if ( e ) {
+                elementTop += e.offsetTop;
+                e = e.offsetParent;
             }
         }
 
+        var topOffset = elementTop - this.scrollingContainer.scrollTop;
+        if ( topOffset < 0 ) {
+            this.scrollingContainer.scrollTop += topOffset;
+        }
+        else {
+            var bottomOffset = ( elementTop + element.offsetHeight ) -
+                ( this.scrollingContainer.scrollTop + this.scrollingContainer.offsetHeight );
+            if ( bottomOffset > 0 ) {
+                this.scrollingContainer.scrollTop += bottomOffset;
+            }
+        }
     };
 
     T.prototype.removeCompletions = function() {
@@ -1331,6 +1333,12 @@
 
     };
 
+    T.prototype.getScrollingElement = function( ) {
+
+        return this.scrollingContainer;
+
+    };
+
     //
 
     function TokenInput() {
@@ -1351,6 +1359,7 @@
             'removeToken',
             'setTokens',
             'setElementAfterCompletions',
+            'getScrollingElement',
             'onUp',
             'onDown',
             'destroy'
