@@ -697,9 +697,12 @@
             }.bind( this ) );
             containerElement.appendChild( element );
 
-            this.completionElements.push( element );
-
         }, this );
+
+        completionElements = this.floatingElement.getElementsByClassName( 'completion' );
+        for ( var i = 0; i < completionElements.length; i++ ) {
+            this.completionElements.push( completionElements[ i ] );
+        };
 
         this.positionFloatingElement();
 
