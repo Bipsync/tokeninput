@@ -440,6 +440,11 @@
         ) {
             e.preventDefault();
 
+            if ( this.options.readOnly ) {
+                this.deselectToken();
+                return;
+            }
+
             this.removeSelectedToken();
 
             if ( !this.tokens.length ) {
