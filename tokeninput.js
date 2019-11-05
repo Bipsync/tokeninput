@@ -49,6 +49,7 @@
             floatingElementParent : null,
 
             beforeEnter : null,
+            beforeCompletionClick : null,
 
             hintElement : null,
             scrollingElement : null,
@@ -699,10 +700,8 @@
 
         }, this );
 
-        completionElements = this.floatingElement.getElementsByClassName( 'completion' );
-        for ( var i = 0; i < completionElements.length; i++ ) {
-            this.completionElements.push( completionElements[ i ] );
-        };
+        this.completionElements = Array.prototype.slice.call(
+            this.floatingElement.getElementsByClassName( 'completion' ) );
 
         this.positionFloatingElement();
 
