@@ -195,6 +195,10 @@ window.addEventListener( 'load', function() {
             inlineTokenFormatter : function( datum ) {
                 return '<span contenteditable="false" class="token">' + datum.text + '</span>';
             }
+        }, {
+            id : 'demo17',
+            completionsForText : completionsForTextWithSuggestions( defaultSuggestions ),
+            namespace : 'tokeninput-'
         }
     ].forEach( function( options ) {
 

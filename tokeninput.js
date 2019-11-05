@@ -6,6 +6,7 @@
 
             debug : false,
 
+            namespace : null, // string or function to namespace element classes
             readOnly : false,
             tabToAdd : true,
             xHTML : '&times;',
@@ -232,7 +233,7 @@
             if (
                 this.options.disableTokenClick &&
                 (
-                    ( event.relatedTarget && event.relatedTarget.className === 'x' ) ||
+                    ( event.relatedTarget && event.relatedTarget.className === this.namespace( 'x' ) ) ||
                     ( event.relatedTarget && event.relatedTarget.lastChild && event.relatedTarget.lastChild.className === 'x' )
                 )
             ) {
@@ -520,7 +521,7 @@
         this.removeFloatingElement();
 
         var element = document.createElement( 'div' );
-        element.className = 'floating';
+        element.className = this.namespace( 'floating' );
         element.style.overflow = 'hidden';
 
         var removeElement = this._createRemoveElement();
@@ -528,10 +529,10 @@
         element.appendChild( removeElement );
 
         var containerElement = this.completionsListElement = document.createElement( 'div' );
-        containerElement.className = 'container';
+        containerElement.className = this.namespace( 'container' );
 
         var listElement = this.completionsListElement = document.createElement( 'div' );
-        listElement.className = 'list';
+        listElement.className = this.namespace( 'list' );
         containerElement.appendChild( listElement );
 
         if ( this.elementAfterCompletions ) {
@@ -685,7 +686,7 @@
             var element = document.createElement( 'div' );
             element.style.display = 'block';
             element.className =
-                [ 'completion' ].concat( this.options.completionClassNames( datum ) ).join( ' ' );
+                [ this.namespace( 'completion' ) ].concat( this.options.completionClassNames( datum ) ).join( ' ' );
             element.textContent = datum.text;
             if ( this.options.completionFormatter ) {
                 this.options.completionFormatter( datum, element );
@@ -702,7 +703,7 @@
         }, this );
 
         this.completionElements = Array.prototype.slice.call(
-            this.floatingElement.getElementsByClassName( 'completion' ) );
+            this.floatingElement.getElementsByClassName( this.namespace( 'completion' ) ) );
 
         this.positionFloatingElement();
 
@@ -728,12 +729,12 @@
 
             containerElement = this.groupElements[ datumGroup ] = document.createElement( 'div' );
             containerElement.className =
-                [ 'group' ].concat( this.options.completionGroupClassNames( completionGroup ) ).join( ' ' );
+                [ this.namespace( 'group' ) ].concat( this.options.completionGroupClassNames( completionGroup ) ).join( ' ' );
 
             if ( completionGroup.heading ) {
                 var heading = document.createElement( 'div' );
                 heading.className =
-                    [ 'heading' ].concat( this.options.completionGroupHeadingClassNames( completionGroup ) ).join( ' ' );
+                    [ this.namespace( 'heading' ) ].concat( this.options.completionGroupHeadingClassNames( completionGroup ) ).join( ' ' );
                 heading.textContent = completionGroup.heading;
                 containerElement.appendChild( heading );
             }
@@ -833,9 +834,9 @@
 
         }
 
-        if ( this.options.footerText && document.getElementsByClassName( 'tokenInputFooter' ).length === 0 ) {
+        if ( this.options.footerText && document.getElementsByClassName( this.namespace( 'footer' ) ).length === 0 ) {
             var footerElement = document.createElement( 'div' );
-            footerElement.className = 'tokenInputFooter';
+            footerElement.className = this.namespace( 'footer' );
             footerElement.innerText = this.options.footerText;
             this.floatingElement.appendChild( footerElement );
         }
@@ -963,7 +964,7 @@
             element.style.display = 'inline-block';
             element.tabIndex = -1;
             element.className =
-                [ 'token' ].concat( this.options.tokenClassNames( datum ) ).join( ' ' );
+                [ this.namespace( 'token' ) ].concat( this.options.tokenClassNames( datum ) ).join( ' ' );
 
             element.textContent = datum.text;
             if ( this.options.tokenFormatter ) {
@@ -1210,7 +1211,7 @@
     T.prototype._createRemoveElement = function() {
 
         var element = document.createElement( 'a' );
-        element.className = 'x';
+        element.className = this.namespace( 'x' );
         element.href = '#';
         element.tabIndex = -1;
         element.innerHTML = this.options.xHTML;
@@ -1349,11 +1350,23 @@
 
     };
 
-    T.prototype.getScrollingContainer = function( ) {
+    T.prototype.getScrollingContainer = function() {
 
         return this.scrollingContainer;
 
     };
+
+    T.prototype.namespace = function( className ) {
+
+        if ( typeof this.options.namespace == 'string' ) {
+            className = this.options.namespace + className;
+        }
+        else if ( typeof this.options.namespace == 'function' ) {
+            className = this.options.namespace( className );
+        }
+        return className;
+
+    }
 
     //
 
