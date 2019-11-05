@@ -52,7 +52,7 @@
             beforeCompletionClick : null,
 
             hintElement : null,
-            scrollingElement : null,
+            scrollingContainerClassName : null,
             hintAfterAdd : false,
             disableTokenClick : false,
             disableFocusOnRemove : false,
@@ -548,7 +548,8 @@
 
         this.floatingElement = element;
 
-        this.scrollingContainer = this.options.scrollingElement ? this.floatingElement.getElementsByClassName( this.options.scrollingElement )[0] : this.floatingElement;
+        this.scrollingContainer = this.options.scrollingContainerClassName ?
+            this.floatingElement.getElementsByClassName( this.options.scrollingContainerClassName )[ 0 ] : this.floatingElement;
     };
 
     T.prototype.onRemoveFloatingElementClick = function( e ) {
@@ -1348,7 +1349,7 @@
 
     };
 
-    T.prototype.getScrollingElement = function( ) {
+    T.prototype.getScrollingContainer = function( ) {
 
         return this.scrollingContainer;
 
@@ -1374,7 +1375,7 @@
             'removeToken',
             'setTokens',
             'setElementAfterCompletions',
-            'getScrollingElement',
+            'getScrollingContainer',
             'onUp',
             'onDown',
             'destroy'
