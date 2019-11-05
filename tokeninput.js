@@ -691,7 +691,7 @@
             this.addEventListener( element, 'mousedown', function( e ) {
 
                 e.preventDefault();
-                this.onCompletionClick( element );
+                this.onCompletionClick( element, e );
                 return false;
 
             }.bind( this ) );
@@ -747,17 +747,25 @@
 
     };
 
-    T.prototype.onCompletionClick = function( element ) {
+    T.prototype.onCompletionClick = function( element, e ) {
 
+        var handled = false;
         var index = this.completionElements.indexOf( element );
         if ( index != -1 ) {
-
             this.selectedCompletionIndex = index;
-            this.addTokenFromSelectedCompletion();
-
-            this.inputElement.focus();
-
         }
+
+        if ( this.options[ 'beforeCompletionClick' ] ) {
+            if ( this.options[ 'beforeCompletionClick' ]( e ) === false ) {
+                handled = true;
+            }
+        }
+
+        if ( !handled ) {
+            this.addTokenFromSelectedCompletion();
+        }
+
+        this.inputElement.focus();
 
     };
 
