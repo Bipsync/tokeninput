@@ -673,7 +673,10 @@
         }
 
         this.completions = completions;
-        if ( !completions.length && !this.options.footerText ) {
+        if ( !completions.length ) {
+            if ( this.options.footerText || this.elementAfterCompletions ) {
+                this.setupFloatingElement();
+            }
             return;
         }
 
