@@ -304,7 +304,8 @@
             if ( this.selectedCompletionIndex === undefined ) {
                 if ( this.completionsAboveInput ) {
                     e.preventDefault();
-                    this.selectedCompletionIndex = this.completions.length - 1;
+                    var elements = this.floatingElement.getElementsByClassName( this.namespace( 'completion' ) );
+                    this.selectedCompletionIndex = this.completionElements.indexOf( elements[ elements.length - 1 ] );
                     this.selectCompletion();
                 }
             }
@@ -314,7 +315,13 @@
             else if ( this.selectedCompletionIndex > 0 ) {
                 e.preventDefault();
                 this.deselectCompletion();
-                this.selectedCompletionIndex--;
+
+                var allElements = this.floatingElement.getElementsByClassName( this.namespace( 'completion' ) );
+                var currentElement = this.completionElements[ this.selectedCompletionIndex ];
+                var currentIndex = Array.prototype.indexOf.call( allElements, currentElement );
+                var previousElement = allElements[ currentIndex - 1 ];
+                this.selectedCompletionIndex = this.completionElements.indexOf( previousElement );
+
                 this.selectCompletion();
             }
         }
@@ -330,14 +337,21 @@
             if ( this.selectedCompletionIndex === undefined ) {
                 if ( !this.completionsAboveInput ) {
                     e.preventDefault();
-                    this.selectedCompletionIndex = 0;
+                    var allElements = this.floatingElement.getElementsByClassName( this.namespace( 'completion' ) );
+                    this.selectedCompletionIndex = this.completionElements.indexOf( allElements[ 0 ] );
                     this.selectCompletion();
                 }
             }
             else if ( this.selectedCompletionIndex < this.completions.length - 1 ) {
                 e.preventDefault();
                 this.deselectCompletion();
-                this.selectedCompletionIndex++;
+
+                var allElements = this.floatingElement.getElementsByClassName( this.namespace( 'completion' ) );
+                var currentElement = this.completionElements[ this.selectedCompletionIndex ];
+                var currentIndex = Array.prototype.indexOf.call( allElements, currentElement );
+                var nextElement = allElements[ currentIndex + 1 ];
+                this.selectedCompletionIndex = this.completionElements.indexOf( nextElement );
+
                 this.selectCompletion();
             }
         }
@@ -703,10 +717,9 @@
             }.bind( this ) );
             containerElement.appendChild( element );
 
-        }, this );
+            this.completionElements.push( element );
 
-        this.completionElements = Array.prototype.slice.call(
-            this.floatingElement.getElementsByClassName( this.namespace( 'completion' ) ) );
+        }, this );
 
         this.positionFloatingElement();
 
