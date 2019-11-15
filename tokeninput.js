@@ -915,7 +915,6 @@
         delete this.selectedCompletionIndex;
 
         this.completionsListElement.parentNode.removeChild( this.completionsListElement );
-        //this.removeFloatingElement();
 
     };
 
