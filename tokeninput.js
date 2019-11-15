@@ -914,7 +914,8 @@
         this.groupElements = {};
         delete this.selectedCompletionIndex;
 
-        this.removeFloatingElement();
+        this.completionsListElement.parentNode.removeChild( this.completionsListElement );
+        //this.removeFloatingElement();
 
     };
 
@@ -1399,6 +1400,7 @@
             'getTokens',
             'getSelectedCompletionElement',
             'setCompletionGroups',
+            'removeCompletions',
             'removeFloatingElement',
             'positionFloatingElement',
             'removeToken',
