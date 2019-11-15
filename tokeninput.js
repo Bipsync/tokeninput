@@ -48,6 +48,7 @@
 
             positionFloatingElement : null, /* function( floatingElement ){} */
             floatingElementParent : null,
+            removeOnlyCompletionsListElement : false,
 
             beforeEnter : null,
             beforeCompletionClick : null,
@@ -914,7 +915,11 @@
         this.groupElements = {};
         delete this.selectedCompletionIndex;
 
-        this.completionsListElement.parentNode.removeChild( this.completionsListElement );
+        if ( this.options.removeOnlyCompletionsListElement ) {
+            this.completionsListElement.parentNode.removeChild( this.completionsListElement );
+        } else {
+            this.removeFloatingElement();
+        }
 
     };
 
