@@ -1319,7 +1319,7 @@
         var el = this.inputElement,
             placeholderLength = this.options.placeholderLength || el.placeholder.length,
             targetSize;
-        if ( el.value.length && el.value.length > placeholderLength ) {
+        if ( el.value.length ) {
             targetSize = el.value.length;
         }
         else if ( placeholderLength ) {
