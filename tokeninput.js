@@ -1286,7 +1286,11 @@
 
         this.setupFloatingElement();
 
-        this.floatingElement.appendChild( this.options.hintElement );
+        if ( this.elementAfterCompletions ) {
+            this.scrollingContainer.insertBefore( this.options.hintElement, this.elementAfterCompletions );
+        } else {
+            this.scrollingContainer.appendChild( this.options.hintElement );
+        }
         this.options.hintElement.style.display = '';
 
         this.positionFloatingElement();
