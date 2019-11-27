@@ -1182,6 +1182,15 @@
 
     };
 
+    T.prototype.getSelectedCompletionElement = function() {
+
+        if ( this.selectedCompletionIndex !== undefined ) {
+            return this.completionElements[ this.selectedCompletionIndex ];
+        }
+        return undefined;
+
+    };
+
     T.prototype.dispatchEvent = function( eventName, detail ) {
 
         var event;
@@ -1397,6 +1406,7 @@
         [
             'addEventListener',
             'getTokens',
+            'getSelectedCompletionElement',
             'setCompletionGroups',
             'removeCompletions',
             'removeFloatingElement',
