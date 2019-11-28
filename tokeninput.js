@@ -1182,6 +1182,15 @@
 
     };
 
+    T.prototype.getSelectedCompletion = function() {
+
+        if ( this.selectedCompletionIndex !== undefined ) {
+            return this.completions[ this.selectedCompletionIndex ];
+        }
+        return undefined;
+
+    };
+
     T.prototype.getSelectedCompletionElement = function() {
 
         if ( this.selectedCompletionIndex !== undefined ) {
@@ -1406,6 +1415,7 @@
         [
             'addEventListener',
             'getTokens',
+            'getSelectedCompletion',
             'getSelectedCompletionElement',
             'setCompletionGroups',
             'removeCompletions',
