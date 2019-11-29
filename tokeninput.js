@@ -543,6 +543,10 @@
         this.addEventListener( removeElement, 'click', this.onRemoveFloatingElementClick.bind( this ) );
         element.appendChild( removeElement );
 
+        if ( this.elementBeforeCompletions ) {
+            element.appendChild( this.elementBeforeCompletions );
+        }
+
         var containerElement = this.completionsListElement = document.createElement( 'div' );
         containerElement.className = this.namespace( 'container' );
 
@@ -1384,6 +1388,12 @@
 
     };
 
+    T.prototype.setElementBeforeCompletions = function( elementBeforeCompletions ) {
+
+        this.elementBeforeCompletions = elementBeforeCompletions;
+
+    };
+
     T.prototype.getScrollingContainer = function() {
 
         return this.scrollingContainer;
@@ -1424,6 +1434,7 @@
             'removeToken',
             'setTokens',
             'setElementAfterCompletions',
+            'setElementBeforeCompletions',
             'getScrollingContainer',
             'onUp',
             'onDown',
