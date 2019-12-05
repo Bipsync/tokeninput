@@ -695,6 +695,7 @@
         if ( !completions.length ) {
             if ( this.options.footerText || this.elementAfterCompletions ) {
                 this.setupFloatingElement();
+                this.positionFloatingElement();
             }
             return;
         }
