@@ -301,29 +301,27 @@
 
     T.prototype.onUp = function( e ) {
 
+        var allElements = this.floatingElement.getElementsByClassName( this.namespace( 'completion' ) );
+
         if ( this.completions.length ) {
             if ( this.selectedCompletionIndex === undefined ) {
                 if ( this.completionsAboveInput ) {
                     e.preventDefault();
-                    var elements = this.floatingElement.getElementsByClassName( this.namespace( 'completion' ) );
-                    this.selectedCompletionIndex = this.completionElements.indexOf( elements[ elements.length - 1 ] );
+                    this.selectedCompletionIndex = this.completionElements.indexOf( allElements[ allElements.length - 1 ] );
                     this.selectCompletion();
                 }
             }
-            else if ( this.selectedCompletionIndex === 0 ) {
-                e.preventDefault();
-            }
-            else if ( this.selectedCompletionIndex > 0 ) {
-                e.preventDefault();
-                this.deselectCompletion();
-
-                var allElements = this.floatingElement.getElementsByClassName( this.namespace( 'completion' ) );
+            else {
                 var currentElement = this.completionElements[ this.selectedCompletionIndex ];
                 var currentIndex = Array.prototype.indexOf.call( allElements, currentElement );
                 var previousElement = allElements[ currentIndex - 1 ];
-                this.selectedCompletionIndex = this.completionElements.indexOf( previousElement );
 
-                this.selectCompletion();
+                if ( previousElement ) {
+                    e.preventDefault();
+                    this.deselectCompletion();
+                    this.selectedCompletionIndex = this.completionElements.indexOf( previousElement );
+                    this.selectCompletion();
+                }
             }
         }
         else if ( this.completionsAboveInput ) {
@@ -335,25 +333,27 @@
     T.prototype.onDown = function( e ) {
 
         if ( this.completions.length ) {
+
+            var allElements = this.floatingElement.getElementsByClassName( this.namespace( 'completion' ) );
+
             if ( this.selectedCompletionIndex === undefined ) {
                 if ( !this.completionsAboveInput ) {
                     e.preventDefault();
-                    var allElements = this.floatingElement.getElementsByClassName( this.namespace( 'completion' ) );
                     this.selectedCompletionIndex = this.completionElements.indexOf( allElements[ 0 ] );
                     this.selectCompletion();
                 }
             }
-            else if ( this.selectedCompletionIndex < this.completions.length - 1 ) {
-                e.preventDefault();
-                this.deselectCompletion();
-
-                var allElements = this.floatingElement.getElementsByClassName( this.namespace( 'completion' ) );
+            else {
                 var currentElement = this.completionElements[ this.selectedCompletionIndex ];
                 var currentIndex = Array.prototype.indexOf.call( allElements, currentElement );
                 var nextElement = allElements[ currentIndex + 1 ];
-                this.selectedCompletionIndex = this.completionElements.indexOf( nextElement );
 
-                this.selectCompletion();
+                if ( nextElement && nextElement.offsetParent ) {
+                    e.preventDefault();
+                    this.deselectCompletion();
+                    this.selectedCompletionIndex = this.completionElements.indexOf( nextElement );
+                    this.selectCompletion();
+                }
             }
         }
         else {
