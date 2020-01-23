@@ -326,7 +326,6 @@
         }
         else if ( this.completionsAboveInput ) {
             e.preventDefault();
-            this.suggestCompletions();
         }
     };
 
@@ -358,7 +357,6 @@
         }
         else {
             e.preventDefault();
-            this.suggestCompletions();
         }
 
     };
