@@ -1175,7 +1175,9 @@
     T.prototype.deselectToken = function() {
 
         var element = this.tokenElements[ this.selectedTokenIndex ];
-        element.classList.remove( 'selected' );
+        if ( element ) {
+            element.classList.remove( 'selected' );
+        }
 
     };
 
