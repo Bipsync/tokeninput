@@ -30,6 +30,19 @@
                 matchOffset : 1
             },
 
+            autoSelectSingleCompletions : true,
+            positionFloatingElement : null, /* function( floatingElement ){} */
+            floatingElementParent : null,
+            removeOnlyCompletionsListElement : false,
+            beforeEnter : null,
+            beforeCompletionClick : null,
+            hintElement : null,
+            scrollingContainerClassName : null,
+            hintAfterAdd : false,
+            disableTokenClick : false,
+            disableFocusOnRemove : false,
+            placeholderLength : null,
+
             completionsForText : function( /* text, delayedCompletionsId, delayedCompletionsFn */ ) { return []; },
             completionClassNames : function( /* datum */ ) { return []; },
             completionFormatter : function( /* datum, element */ ) {},
@@ -37,29 +50,12 @@
                 completionGroup.id
             ]; },
             completionGroupHeadingClassNames : function( /* completionGroup */ ) { return []; },
-            autoSelectSingleCompletions : true,
-
             completionGroups : {},
             newCompletionOption : function( group/*, text */ ) {
                 return {
                     text : '+ New' + ( group.singular ? ' ' + group.singular : '' ) + '…'
                 };
-            },
-
-            positionFloatingElement : null, /* function( floatingElement ){} */
-            floatingElementParent : null,
-            removeOnlyCompletionsListElement : false,
-
-            beforeEnter : null,
-            beforeCompletionClick : null,
-
-            hintElement : null,
-            scrollingContainerClassName : null,
-            hintAfterAdd : false,
-            disableTokenClick : false,
-            disableFocusOnRemove : false,
-
-            placeholderLength : null
+            }
 
         }, options || {} );
 
