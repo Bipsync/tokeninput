@@ -27,6 +27,7 @@ Method | Description
 `addEventListener(element, type, listener)` | Adds an event listener to the given element.
 `getTokens()` | Returns an array of objects representing each token added to the component.
 `getSelectedCompletion()` | Returns the datum of the selected completion
+`setSelectedCompletion(datum)` | Sets the selected completion
 `getSelectedCompletionElement()` | Returns the element of the selected completion
 `removeCompletions()` | Removes all the completions
 `setTokens(newTokens)` | Removes all existing tokens from the UI and replaces them with the tokens in the given array.

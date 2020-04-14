@@ -1409,6 +1409,19 @@
 
     }
 
+    T.prototype.setSelectedCompletion = function( completion ) {
+
+        if ( this.selectedCompletionIndex !== undefined ) {
+            this.deselectCompletion();
+        }
+        var index = this.completions.indexOf( completion );
+        if ( index != -1 ) {
+            this.selectedCompletionIndex = index;
+            this.selectCompletion();
+        }
+
+    }
+
     //
 
     function TokenInput() {
@@ -1425,6 +1438,7 @@
             'getSelectedCompletion',
             'getSelectedCompletionElement',
             'setCompletionGroups',
+            'setSelectedCompletion',
             'removeCompletions',
             'removeFloatingElement',
             'positionFloatingElement',
