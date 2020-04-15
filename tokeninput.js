@@ -297,9 +297,8 @@
 
     T.prototype.onUp = function( e ) {
 
-        var allElements = this.floatingElement.getElementsByClassName( this.namespace( 'completion' ) );
-
         if ( this.completions.length ) {
+            var allElements = this.floatingElement.getElementsByClassName( this.namespace( 'completion' ) );
             if ( this.selectedCompletionIndex === undefined ) {
                 if ( this.completionsAboveInput ) {
                     e.preventDefault();
