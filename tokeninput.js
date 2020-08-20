@@ -40,6 +40,7 @@
             scrollingContainerClassName : null,
             hintAfterAdd : false,
             disableTokenClick : false,
+            disableFocusOnTokenClick : false,
             disableFocusOnRemove : false,
             placeholderLength : null,
 
@@ -194,7 +195,9 @@
 
             this.addEventListener( element.parentNode, 'click', function() {
 
-                this.inputElement.focus();
+                if ( !( this.options.disableFocusOnTokenClick && $( event.target ).closest( '.token' ).length > 0 ) ) {
+                    this.inputElement.focus();
+                }
 
             }.bind( this ) );
 
