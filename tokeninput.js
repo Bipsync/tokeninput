@@ -43,6 +43,7 @@
             disableFocusOnTokenClick : false,
             disableFocusOnRemove : false,
             placeholderLength : null,
+            focusAfterAdd : true,
 
             completionsForText : function( /* text, delayedCompletionsId, delayedCompletionsFn */ ) { return []; },
             completionClassNames : function( /* datum */ ) { return []; },
@@ -784,7 +785,9 @@
             this.addTokenFromSelectedCompletion();
         }
 
-        this.inputElement.focus();
+        if ( this.options.focusAfterAdd ) {
+            this.inputElement.focus();
+        }
 
     };
 
@@ -1446,6 +1449,7 @@
             'positionFloatingElement',
             'removeToken',
             'setTokens',
+            'suggestCompletions',
             'setElementAfterCompletions',
             'setElementBeforeCompletions',
             'getScrollingContainer',
