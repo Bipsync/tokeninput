@@ -1152,7 +1152,14 @@
 
         var tokenIndex = this.tokens.indexOf( datum );
         if ( tokenIndex == -1 ) {
-            return;
+            // try by ID
+            if ( datum.id !== undefined ) {
+                var tokenIndex = this.tokens.map( function( token ) { return token.id; } ).indexOf( datum.id );
+            }
+
+            if ( tokenIndex == -1 ) {
+                return;
+            }
         }
 
         var tokenElement = this.tokenElements.splice( tokenIndex, 1 )[ 0 ];
