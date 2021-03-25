@@ -354,9 +354,6 @@
                 }
             }
         }
-        else {
-            e.preventDefault();
-        }
 
     };
 
