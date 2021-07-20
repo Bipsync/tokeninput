@@ -1453,6 +1453,7 @@
             'positionFloatingElement',
             'removeToken',
             'setTokens',
+            'addToken',
             'suggestCompletions',
             'setElementAfterCompletions',
             'setElementBeforeCompletions',
