@@ -1454,6 +1454,7 @@
             'removeToken',
             'setTokens',
             'addToken',
+            'didAddToken',
             'suggestCompletions',
             'setElementAfterCompletions',
             'setElementBeforeCompletions',
