@@ -231,6 +231,11 @@
 
         this.addEventListener( element, 'blur', function( event ) {
 
+            if ( event.relatedTarget && ( event.target == event.relatedTarget || event.relatedTarget.contains( event.target ) ) ) {
+                // allow click & drag of scrollbars etc
+                return;
+            }
+
             if (
                 this.options.disableTokenClick &&
                 (
