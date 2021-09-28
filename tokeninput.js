@@ -233,6 +233,14 @@
 
             if ( event.relatedTarget && ( event.target == event.relatedTarget || event.relatedTarget.contains( event.target ) ) ) {
                 // allow click & drag of scrollbars etc
+                event.relatedTarget.addEventListener( 'blur', () => {
+                    setTimeout( function() {
+                        this.clearNonInlineInputElementValue();
+                        this.removeFloatingElement();
+                    }.bind( this ), 100 );
+                }, {
+                    once : true
+                } );
                 return;
             }
 
