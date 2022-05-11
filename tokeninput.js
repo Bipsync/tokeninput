@@ -231,6 +231,9 @@
 
         this.addEventListener( element, 'blur', function( event ) {
 
+            const eventIsTokenRemove = ( event.relatedTarget && event.relatedTarget.className === this.namespace( 'x' ) ) ||
+                    ( event.relatedTarget && event.relatedTarget.lastChild && event.relatedTarget.lastChild.className === 'x' );
+
             if ( event.relatedTarget && ( event.target == event.relatedTarget || event.relatedTarget.contains( event.target ) ) ) {
                 // allow click & drag of scrollbars etc
                 event.relatedTarget.addEventListener( 'blur', () => {
@@ -244,19 +247,13 @@
                 return;
             }
 
-            if (
-                this.options.disableTokenClick &&
-                (
-                    ( event.relatedTarget && event.relatedTarget.className === this.namespace( 'x' ) ) ||
-                    ( event.relatedTarget && event.relatedTarget.lastChild && event.relatedTarget.lastChild.className === 'x' )
-                )
-            ) {
+            if ( this.options.disableTokenClick && eventIsTokenRemove ) {
 
                 setTimeout( function() {
                     this.showHintElement();
                 }.bind( this ), 0 );
 
-            } else {
+            } else if ( !eventIsTokenRemove ) {
 
                 setTimeout( function() {
                     this.clearNonInlineInputElementValue();
@@ -1119,6 +1116,8 @@
 
             if ( !this.options.disableFocusOnRemove ) {
                 this.inputElement.focus();
+            } else {
+                this.inputElement.blur();
             }
 
         }
