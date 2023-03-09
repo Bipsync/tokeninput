@@ -821,8 +821,8 @@
 
         while ( element ) {
             if ( /^(absolute|relative)$/.test(
-                    document.defaultView.getComputedStyle( element, null ).getPropertyValue( 'position' )
-                ) ) {
+                document.defaultView.getComputedStyle( element, null ).getPropertyValue( 'position' )
+            ) ) {
                 break;
             }
             inputLeft += element.offsetLeft;
@@ -1315,16 +1315,16 @@
 
     T.prototype.showHintElement = function() {
 
-        this.setupFloatingElement();
+        if ( this.options.hintElement ) {
+            this.setupFloatingElement();
 
-        if ( this.elementAfterCompletions ) {
-            this.scrollingContainer.insertBefore( this.options.hintElement, this.elementAfterCompletions );
-        } else {
-            this.scrollingContainer.appendChild( this.options.hintElement );
+            if (this.elementAfterCompletions) {
+                this.scrollingContainer.insertBefore( this.options.hintElement, this.elementAfterCompletions );
+            } else {
+                this.scrollingContainer.appendChild( this.options.hintElement );
+            }
+            this.options.hintElement.style.display = '';
         }
-        this.options.hintElement.style.display = '';
-
-        this.positionFloatingElement();
 
     };
 
