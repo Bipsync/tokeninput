@@ -1032,7 +1032,7 @@
 
         }
         else {
-            if ( !this.options.readOnly ) {
+            if ( !this.options.readOnly && !datum.readOnly ) {
                 var removeElement = this._createRemoveElement();
                 this.addEventListener( removeElement, 'click', this.onRemoveTokenClick.bind( this ) );
                 element.appendChild( removeElement );
