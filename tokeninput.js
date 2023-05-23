@@ -1324,6 +1324,8 @@
                 this.scrollingContainer.appendChild( this.options.hintElement );
             }
             this.options.hintElement.style.display = '';
+
+            this.positionFloatingElement();
         }
 
     };
