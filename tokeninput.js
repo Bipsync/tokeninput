@@ -885,7 +885,11 @@
 
     T.prototype.selectCompletion = function() {
 
-        var element = this.completionElements[ this.selectedCompletionIndex ];
+        const element = this.completionElements[ this.selectedCompletionIndex ];
+        if ( !element ) {
+            return;
+        }
+
         element.classList.add( 'selected' );
 
         element.parentNode.classList.add( 'hasSelected' );
