@@ -762,6 +762,13 @@
                 heading.className =
                     [ this.namespace( 'heading' ) ].concat( this.options.completionGroupHeadingClassNames( completionGroup ) ).join( ' ' );
                 heading.textContent = completionGroup.heading;
+
+                if ( completionGroup.label ) {
+                    var span = document.createElement( 'span' )
+                    span.className = 'label';
+                    span.textContent = completionGroup.label;
+                    heading.appendChild( span );
+                }
                 containerElement.appendChild( heading );
             }
 
