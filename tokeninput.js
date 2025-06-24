@@ -44,6 +44,7 @@
             disableFocusOnRemove : false,
             placeholderLength : null,
             focusAfterAdd : true,
+            tokenLimit : null,
 
             completionsForText : function( /* text, delayedCompletionsId, delayedCompletionsFn */ ) { return []; },
             completionClassNames : function( /* datum */ ) { return []; },
@@ -664,7 +665,6 @@
                 }
             }
         }
-
     };
 
     T.prototype.insertNewOptionForGroup = function( groupId, group, completions, text ) {
@@ -985,6 +985,15 @@
     T.prototype.addToken = function( datum, options ) {
 
         options = options || {};
+
+        // Check if token limit has been reached
+        if (this.options.tokenLimit !== null && this.tokens.length >= this.options.tokenLimit) {
+
+            this.removeToken(this.tokens[this.tokens.length - 1], {
+                silent: true
+            });
+
+        }
 
         if ( !options.silent ) {
             this.dispatchEvent( 'willAdd', datum );
