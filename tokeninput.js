@@ -1218,6 +1218,16 @@
 
     };
 
+    T.prototype.getTokenFromElement = function( element ) {
+
+        var index = this.tokenElements.indexOf( element );
+        if ( index != -1 ) {
+            return this.tokens[ index ];
+        }
+        return undefined;
+
+    };  
+
     T.prototype.deselectToken = function() {
 
         var element = this.tokenElements[ this.selectedTokenIndex ];
@@ -1487,6 +1497,7 @@
         [
             'addEventListener',
             'getTokens',
+            'getTokenFromElement',
             'getSelectedCompletion',
             'getSelectedCompletionElement',
             'setCompletionGroups',
