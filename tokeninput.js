@@ -982,6 +982,15 @@
 
     };
 
+    T.prototype.replaceToken = function( tokenToRemove, tokenToAdd, options ) {
+
+        options = options || {};
+
+        this.removeToken( tokenToRemove, options );
+        this.addToken( tokenToAdd, options );
+
+    };
+
     T.prototype.addToken = function( datum, options ) {
 
         options = options || {};
@@ -1489,6 +1498,7 @@
             'setTokens',
             'addToken',
             'didAddToken',
+            'replaceToken',
             'suggestCompletions',
             'setElementAfterCompletions',
             'setElementBeforeCompletions',
