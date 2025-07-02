@@ -58,7 +58,9 @@
                 return {
                     text : '+ New' + ( group.singular ? ' ' + group.singular : '' ) + '…'
                 };
-            }
+            },
+            showSuggestionsOnFocus : false,
+            suggestionsOnFocusLimit : 5
 
         }, options || {} );
 
@@ -264,6 +266,19 @@
             }
 
         }.bind( this ) );
+
+        // Show suggestions on focus if enabled
+        if ( this.options.showSuggestionsOnFocus && typeof this.options.completionsForText === 'function' ) {
+            this.addEventListener( element, 'focus', function() {
+                var completions = this.options.completionsForText( '' );
+                if ( Array.isArray( completions ) && completions.length > 0 ) {
+                    this.suggestCompletions( {
+                        completions: this.options.suggestionsOnFocusLimit ? completions.slice( 0, this.options.suggestionsOnFocusLimit ) : completions,
+                        text : ''
+                    } );
+                }
+            }.bind( this ) );
+        }
 
     };
 
