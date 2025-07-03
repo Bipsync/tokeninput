@@ -1129,7 +1129,9 @@
             this.selectToken();
 
             this.clearNonInlineInputElementValue();
-            this.inputElement.focus();
+            if ( !this.options.disableFocusOnTokenClick ) {
+                this.inputElement.focus();
+            }
 
             var token = this.tokens[ this.selectedTokenIndex ];
             this.dispatchEvent( 'tokenClicked', {
