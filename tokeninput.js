@@ -1501,6 +1501,42 @@
 
     }
 
+    T.prototype.setReadOnly = function( readOnly ) {
+        // Update readOnly option
+        this.options.readOnly = readOnly;
+        
+        // Get the container element (parent of input element)
+        var container = this.inputElement.parentNode;
+        
+        // Toggle readOnly class on container
+        if ( readOnly ) {
+            container.classList.add( 'readOnly' );
+        } else {
+            container.classList.remove( 'readOnly' );
+        }
+        
+        // Set readOnly attribute on input element
+        this.inputElement.readOnly = readOnly;
+        
+        // Handle click events based on readOnly state
+        if ( this.options.containerClickTriggersFocus ) {
+            if ( readOnly ) {
+                // Remove click handler
+                container.removeEventListener( 'click', this._containerClickHandler );
+            } else if ( !this._containerClickHandler ) {
+                // Create handler if it doesn't exist
+                this._containerClickHandler = function() {
+                    this.inputElement.focus();
+                }.bind( this );
+                
+                // Add click handler
+                container.addEventListener( 'click', this._containerClickHandler );
+            }
+        }
+        
+        return this;
+    };
+
     //
 
     function TokenInput() {
@@ -1533,7 +1569,8 @@
             'getScrollingContainer',
             'onUp',
             'onDown',
-            'destroy'
+            'destroy',
+            'setReadOnly'
 
         ].forEach( function( method ) {
 
