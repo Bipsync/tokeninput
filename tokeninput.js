@@ -1529,6 +1529,7 @@
             if ( readOnly ) {
                 // Remove click handler
                 container.removeEventListener( 'click', this._containerClickHandler );
+                this._containerClickHandler = null;
             } else if ( !this._containerClickHandler ) {
                 // Create handler if it doesn't exist
                 this._containerClickHandler = function() {
