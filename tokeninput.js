@@ -1011,11 +1011,17 @@
         options = options || {};
 
         // Check if token limit has been reached
-        if (this.options.tokenLimit !== null && this.tokens.length >= this.options.tokenLimit) {
+        if ( this.options.tokenLimit !== null && this.tokens.length >= this.options.tokenLimit ) {
 
-            this.removeToken(this.tokens[this.tokens.length - 1], {
-                silent: true
-            });
+            const tokensToRemove = ( this.tokens.length - this.options.tokenLimit ) + 1;
+            if ( tokensToRemove > 0 ) {
+                // Remove tokens from the end until we are one under the limit
+                for ( let i = 0; i < tokensToRemove; i++ ) {
+                    this.removeToken( this.tokens[this.tokens.length - 1 ], {
+                        silent: true
+                    } );
+                }
+            }
 
         }
 
