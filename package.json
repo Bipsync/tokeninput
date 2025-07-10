@@ -1,6 +1,6 @@
 {
   "name": "tokeninput",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Dependency-free Javascript UI component providing a token based input element with grouped completion lists and free-text entry",
   "main": "tokeninput.js",
   "repository": {
