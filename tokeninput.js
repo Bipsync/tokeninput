@@ -44,6 +44,7 @@
             disableFocusOnRemove : false,
             placeholderLength : null,
             focusAfterAdd : true,
+            tokenLimit : null,
 
             completionsForText : function( /* text, delayedCompletionsId, delayedCompletionsFn */ ) { return []; },
             completionClassNames : function( /* datum */ ) { return []; },
@@ -57,7 +58,9 @@
                 return {
                     text : '+ New' + ( group.singular ? ' ' + group.singular : '' ) + '…'
                 };
-            }
+            },
+            showCompletionsOnFocus : false,
+            completionsOnFocusLimit : 5
 
         }, options || {} );
 
@@ -263,6 +266,19 @@
             }
 
         }.bind( this ) );
+
+        // Show suggestions on focus if enabled
+        if ( this.options.showCompletionsOnFocus && typeof this.options.completionsForText === 'function' ) {
+            this.addEventListener( element, 'focus', function() {
+                var completions = this.options.completionsForText( '' );
+                if ( Array.isArray( completions ) && completions.length > 0 ) {
+                    this.suggestCompletions( {
+                        completions: this.options.completionsOnFocusLimit ? completions.slice( 0, this.options.completionsOnFocusLimit ) : completions,
+                        text : ''
+                    } );
+                }
+            }.bind( this ) );
+        }
 
     };
 
@@ -664,7 +680,6 @@
                 }
             }
         }
-
     };
 
     T.prototype.insertNewOptionForGroup = function( groupId, group, completions, text ) {
@@ -982,9 +997,33 @@
 
     };
 
+    T.prototype.replaceToken = function( tokenToRemove, tokenToAdd, options ) {
+
+        options = options || {};
+
+        this.removeToken( tokenToRemove, options );
+        this.addToken( tokenToAdd, options );
+
+    };
+
     T.prototype.addToken = function( datum, options ) {
 
         options = options || {};
+
+        // Check if token limit has been reached
+        if ( this.options.tokenLimit !== null && this.tokens.length >= this.options.tokenLimit ) {
+
+            const tokensToRemove = ( this.tokens.length - this.options.tokenLimit ) + 1;
+            if ( tokensToRemove > 0 ) {
+                // Remove tokens from the end until we are one under the limit
+                for ( let i = 0; i < tokensToRemove; i++ ) {
+                    this.removeToken( this.tokens[this.tokens.length - 1 ], {
+                        silent: true
+                    } );
+                }
+            }
+
+        }
 
         if ( !options.silent ) {
             this.dispatchEvent( 'willAdd', datum );
@@ -1096,7 +1135,9 @@
             this.selectToken();
 
             this.clearNonInlineInputElementValue();
-            this.inputElement.focus();
+            if ( !this.options.disableFocusOnTokenClick ) {
+                this.inputElement.focus();
+            }
 
             var token = this.tokens[ this.selectedTokenIndex ];
             this.dispatchEvent( 'tokenClicked', {
@@ -1199,6 +1240,16 @@
         }
 
     };
+
+    T.prototype.getTokenFromElement = function( element ) {
+
+        var index = this.tokenElements.indexOf( element );
+        if ( index != -1 ) {
+            return this.tokens[ index ];
+        }
+        return undefined;
+
+    };  
 
     T.prototype.deselectToken = function() {
 
@@ -1456,6 +1507,43 @@
 
     }
 
+    T.prototype.setReadOnly = function( readOnly ) {
+        // Update readOnly option
+        this.options.readOnly = readOnly;
+        
+        // Get the container element (parent of input element)
+        var container = this.inputElement.parentNode;
+        
+        // Toggle readOnly class on container
+        if ( readOnly ) {
+            container.classList.add( 'readOnly' );
+        } else {
+            container.classList.remove( 'readOnly' );
+        }
+        
+        // Set readOnly attribute on input element
+        this.inputElement.readOnly = readOnly;
+        
+        // Handle click events based on readOnly state
+        if ( this.options.containerClickTriggersFocus ) {
+            if ( readOnly ) {
+                // Remove click handler
+                container.removeEventListener( 'click', this._containerClickHandler );
+                this._containerClickHandler = null;
+            } else if ( !this._containerClickHandler ) {
+                // Create handler if it doesn't exist
+                this._containerClickHandler = function() {
+                    this.inputElement.focus();
+                }.bind( this );
+                
+                // Add click handler
+                container.addEventListener( 'click', this._containerClickHandler );
+            }
+        }
+        
+        return this;
+    };
+
     //
 
     function TokenInput() {
@@ -1469,6 +1557,7 @@
         [
             'addEventListener',
             'getTokens',
+            'getTokenFromElement',
             'getSelectedCompletion',
             'getSelectedCompletionElement',
             'setCompletionGroups',
@@ -1480,13 +1569,15 @@
             'setTokens',
             'addToken',
             'didAddToken',
+            'replaceToken',
             'suggestCompletions',
             'setElementAfterCompletions',
             'setElementBeforeCompletions',
             'getScrollingContainer',
             'onUp',
             'onDown',
-            'destroy'
+            'destroy',
+            'setReadOnly'
 
         ].forEach( function( method ) {
 
