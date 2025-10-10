@@ -1141,7 +1141,13 @@
 
         if ( !options.silent ) {
             this.dispatchEvent( 'change' );
+            // Old add event kept for backwards compatibility
             this.dispatchEvent( 'add', datum );
+
+            this.dispatchEvent( 'didAdd', {
+                datum : datum,
+                element: element
+            } );
         }
 
     };
