@@ -997,11 +997,28 @@
 
     };
 
-    T.prototype.replaceToken = function( tokenToRemove, tokenToAdd, options ) {
+    T.prototype.replaceToken = function( elementOrTokenToRemove, tokenToAdd, options ) {
 
         options = options || {};
 
-        this.removeToken( tokenToRemove, options );
+        var index, element;
+        
+        if ( elementOrTokenToRemove && elementOrTokenToRemove.nodeType ) {
+            // If the first argument is a DOM element, find the token in this.tokenElements
+            element = elementOrTokenToRemove;
+            index = this.tokenElements.indexOf( element );
+        } else {
+            // Otherwise, assume it's the token data and find it in this.tokens
+            index = this.tokens.indexOf( elementOrTokenToRemove );
+            element = index !== -1 ? this.tokenElements[ index ] : null;
+        }
+
+        if ( index === -1 || !element ) {
+            return;
+        }
+
+        options.index = index;
+        options.element = element;
         this.addToken( tokenToAdd, options );
 
     };
@@ -1010,8 +1027,8 @@
 
         options = options || {};
 
-        // Check if token limit has been reached
-        if ( this.options.tokenLimit !== null && this.tokens.length >= this.options.tokenLimit ) {
+        // Check if token limit has been reached (only if not replacing)
+        if ( options.index === undefined && this.options.tokenLimit !== null && this.tokens.length >= this.options.tokenLimit ) {
 
             const tokensToRemove = ( this.tokens.length - this.options.tokenLimit ) + 1;
             if ( tokensToRemove > 0 ) {
@@ -1035,14 +1052,16 @@
         var element;
         if ( this.inlineTokenMode ) {
 
-            element = document.createElement( 'div' );
+            // Use the existing element or create a new one
+            element = options.element || document.createElement( 'div' );
             element.innerHTML = this.options.inlineTokenFormatter( datum );
             element = element.firstChild;
 
         }
         else {
-
-            element = document.createElement( 'div' );
+            
+            // Use the existing element or create a new one
+            element = options.element || document.createElement( 'div' );
             element.style.display = 'inline-block';
             element.tabIndex = -1;
             element.className =
@@ -1093,16 +1112,32 @@
                 if ( !before ) {
                     before = this.inputElement;
                 }
-                this.inputElement.parentNode.insertBefore( element, before );
+                if ( !options.element ) {
+                    this.inputElement.parentNode.insertBefore( element, before );
+                }
             }
             else {
                 this.inputElement.parentNode.insertBefore( element, this.inputElement );
             }
         }
 
-        this.tokenElements.push( element );
+        if ( options.index !== undefined ) {
+            // Update token at specified index
+            this.tokens[ options.index ] = datum;
+            if ( !options.element ) {
+                this.tokenElements.push( element );
+            }
+        } else {
+            // Add new token
+            this.tokenElements.push( element );
+            this.tokens.push( datum );
+        }
 
-        this.tokens.push( datum );
+        // if updating an existing token and it was selected, make sure it stays selected
+        if ( this.selectedTokenIndex !== undefined && options.index === this.selectedTokenIndex ) {
+            this.deselectToken();
+            this.selectToken();
+        }
 
         if ( !options.silent ) {
             this.dispatchEvent( 'change' );
@@ -1236,7 +1271,7 @@
             this.dispatchEvent( 'remove', removedToken );
         }
         if ( this.willAutoGrowInputElement() ) {
-             this.autoGrowInputElement();
+            this.autoGrowInputElement();
         }
 
     };
@@ -1249,7 +1284,7 @@
         }
         return undefined;
 
-    };  
+    };
 
     T.prototype.deselectToken = function() {
 
@@ -1510,20 +1545,20 @@
     T.prototype.setReadOnly = function( readOnly ) {
         // Update readOnly option
         this.options.readOnly = readOnly;
-        
+
         // Get the container element (parent of input element)
         var container = this.inputElement.parentNode;
-        
+
         // Toggle readOnly class on container
         if ( readOnly ) {
             container.classList.add( 'readOnly' );
         } else {
             container.classList.remove( 'readOnly' );
         }
-        
+
         // Set readOnly attribute on input element
         this.inputElement.readOnly = readOnly;
-        
+
         // Handle click events based on readOnly state
         if ( this.options.containerClickTriggersFocus ) {
             if ( readOnly ) {
@@ -1535,12 +1570,12 @@
                 this._containerClickHandler = function() {
                     this.inputElement.focus();
                 }.bind( this );
-                
+
                 // Add click handler
                 container.addEventListener( 'click', this._containerClickHandler );
             }
         }
-        
+
         return this;
     };
 
